@@ -1,0 +1,33 @@
+{
+  "check_exit_status": "yes", 
+  "comment": "install PyQuil", 
+  "customize": {
+    "install_env": {
+    }
+  }, 
+  "deps": {
+    "python": {
+      "local": "yes",
+      "name": "Python interpreter",
+      "sort": 10,
+      "tags": "compiler,python"
+    }
+  }, 
+  "end_full_path_universal": "build$#sep#$pyquil$#sep#$__init__.py", 
+  "need_cpu_info": "yes", 
+  "only_for_host_os_tags": [
+    "linux"
+  ], 
+  "only_for_target_os_tags": [
+    "linux"
+  ], 
+  "process_script": "install",
+  "soft_uoa": "lib.pyquil",
+  "suggested_path": "lib-pyquil",
+  "tags": [
+    "lib",
+    "pyquil",
+    "quantum",
+    "vcpu"
+  ]
+}
