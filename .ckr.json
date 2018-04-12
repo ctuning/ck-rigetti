@@ -2,6 +2,12 @@
   "data_uid": "6456e78d8c044a88", 
   "data_name": "ck-rigetti", 
   "dict": {
+    "repo_deps": [
+      {
+        "repo_uoa": "ck-autotuning",
+        "repo_url": "https://github.com/ctuning/ck-autotuning"
+      }
+    ],
     "url": "https://github.com/ctuning/ck-rigetti", 
     "shared": "git"
   }, 
