@@ -1,8 +1,8 @@
 # ck-rigetti
 
 
-[pyQuil's code](https://github.com/rigetticomputing/pyquil) on gitHub.
-[pyQuil's official documentation](http://pyquil.readthedocs.io/en/latest/) on ReadTheDocs.
+* [pyQuil's code](https://github.com/rigetticomputing/pyquil) on gitHub.
+* [pyQuil's official documentation](http://pyquil.readthedocs.io/en/latest/) on ReadTheDocs.
 
 ## Obtaining your Forest API key and user_id
 
