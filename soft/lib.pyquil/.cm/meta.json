@@ -11,7 +11,7 @@
       "linux": "pyquil/__init__.py"
     }
   }, 
-  "soft_name": "PyQuil", 
+  "soft_name": "pyQuil",
   "tags": [
     "lib", 
     "pyquil",

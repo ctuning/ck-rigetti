@@ -11,7 +11,7 @@
 # INSTALL_DIR
 
 echo "**************************************************************"
-echo "Installing PyQuil package and its dependencies ..."
+echo "Installing pyQuil package and its dependencies ..."
 
     # This is where pip2/pip3 will install the modules.
     # It has its own funny structure we don't control :
@@ -30,7 +30,7 @@ echo "Removing '${PY_DEPS_TREE}' ..."
 rm -rf ${PY_DEPS_TREE} ${PACKAGE_LIB_DIR}
 
 ######################################################################################
-echo "Installing PyQuil to '${PACKAGE_LIB_DIR}' ..."
+echo "Installing pyQuil to '${PACKAGE_LIB_DIR}' ..."
 
 ${CK_PYTHON_BIN} -m pip install pyquil --prefix=${PY_DEPS_TREE} --no-cache-dir # --ignore-installed
 

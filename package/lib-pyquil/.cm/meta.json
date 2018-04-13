@@ -1,6 +1,6 @@
 {
   "check_exit_status": "yes", 
-  "comment": "install PyQuil", 
+  "comment": "install pyQuil",
   "customize": {
     "install_env": {
     }
