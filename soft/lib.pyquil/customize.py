@@ -84,8 +84,9 @@ def setup(i):
 
     env['PYTHONPATH']       = path_install + ( ';%PYTHONPATH%' if winh=='yes' else ':${PYTHONPATH}')
 
-    forest_api_key          = os.environ.get('PYQUIL_FOREST_API_KEY','')
-    user_id                 = os.environ.get('PYQUIL_USER_ID','')
+    install_env             = cus.get('install_env',{})
+    forest_api_key          = install_env.get('PYQUIL_FOREST_API_KEY',  os.environ.get('PYQUIL_FOREST_API_KEY',''))
+    user_id                 = install_env.get('PYQUIL_USER_ID',         os.environ.get('PYQUIL_USER_ID',''))
 
     if forest_api_key and user_id:
         env['QVM_API_KEY']  = forest_api_key
