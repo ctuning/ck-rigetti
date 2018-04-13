@@ -69,6 +69,7 @@ $ ck install package:lib-pyquil \
 
 
 ## Run a simple test
-
-echo $HOME/CK/ck-rigetti/t/ck_pyquil_test.sh $HOME/CK/ck-rigetti/t/pyquil_test.py | ck virtual env --tags=pyquil
+```
+$ echo $HOME/CK/ck-rigetti/t/ck_pyquil_test.sh $HOME/CK/ck-rigetti/t/pyquil_test.py | ck virtual env --tags=pyquil
+```
 
