@@ -9,6 +9,19 @@ import os
 
 ##############################################################################
 
+def version_cmd(i):                     # FIXME: an extremely fragile approach - lots of assumptions:
+
+    full_path=i['full_path']            # the full_path is to pyquil/__init__.py
+
+    with open(full_path) as init_fd:    # this file only contains one line:     __version__ = "a.b.c"
+        contents = init_fd.read()
+
+    ver = (contents.split('"'))[1]      # assuming the format stays the same, get the stuff from between double quotes
+
+    return {'return':0, 'cmd':'', 'version':ver}
+
+##############################################################################
+
 def dirs(i):
     hosd    = i['host_os_dict']
     macos   = hosd.get('macos','')
