@@ -10,6 +10,7 @@
       "local": "yes",
       "name": "Python interpreter",
       "sort": 10,
+      "add_to_path": "yes",
       "tags": "compiler,python"
     }
   }, 
