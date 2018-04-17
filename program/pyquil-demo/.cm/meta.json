@@ -1,0 +1,51 @@
+{
+  "backup_data_uid": "8d1c41306f46808e",
+  "data_name": "pyquil-demo", 
+  "no_compile": "yes", 
+  "no_target_file": "yes", 
+  "print_files_after_run": [
+    "tmp-stdout.tmp", 
+    "tmp-stderr.tmp"
+  ], 
+  "process_in_tmp": "yes", 
+  "program": "yes", 
+  "run_cmds": {
+    "hello-world": {
+      "ignore_return_code": "no", 
+      "run_time": {
+        "output_invariant_of_repeat": "yes", 
+        "run_cmd_main": "$<<CK_ENV_COMPILER_PYTHON_FILE>>$ $<<CK_ENV_LIB_PYQUIL_EXAMPLES>>$/run_quil.py $<<CK_ENV_LIB_PYQUIL_EXAMPLES>>$/hello_world.quil", 
+        "run_cmd_out1": "tmp-stdout.tmp", 
+        "run_cmd_out2": "tmp-stderr.tmp", 
+        "run_output_files": [
+          "tmp-ck-timer.json", 
+          "tmp-ck-output.bin", 
+          "tmp-ck-output.json"
+        ]
+      }
+    }
+  }, 
+  "run_deps": {
+    "python": {
+      "local": "yes", 
+      "name": "python", 
+      "sort": 10, 
+      "tags": "compiler,lang-python,python,v3"
+    },
+    "lib-pyquil": {
+      "local": "yes", 
+      "name": "Rigetti pyQuil", 
+      "skip_pruning_by_other_deps": "yes", 
+      "sort": 20, 
+      "tags": "lib,pyquil,quantum,vcpu"
+    }
+  }, 
+  "run_vars": {
+  }, 
+  "tags": [
+    "pyquil",
+    "rigetti",
+    "demo",
+    "examples"
+  ]
+}
