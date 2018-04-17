@@ -3,6 +3,7 @@
   "comment": "install pyQuil",
   "customize": {
     "install_env": {
+        "PACKAGE_COMMIT" : "v1.8.0"
     }
   }, 
   "deps": {
