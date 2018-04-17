@@ -1,0 +1,2 @@
+X 0   # set 0th qubit to 1 (negate the 0 that it was initialized to by default
+MEASURE 0 [2]   # measure the contents of 0th qubit into 2nd classical register

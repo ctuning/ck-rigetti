@@ -14,7 +14,7 @@
       "ignore_return_code": "no",
       "run_time": {
         "output_invariant_of_repeat": "yes",
-        "run_cmd_main": "$<<CK_ENV_COMPILER_PYTHON_FILE>>$ $<<CK_ENV_LIB_PYQUIL_EXAMPLES>>$/run_quil.py $<<CK_ENV_LIB_PYQUIL_EXAMPLES>>$/hello_world.quil",
+        "run_cmd_main": "$<<CK_ENV_COMPILER_PYTHON_FILE>>$ $<<CK_ENV_LIB_PYQUIL_EXAMPLES>>$/run_quil.py ../hello_world.quil",
         "run_cmd_out1": "tmp-stdout.tmp",
         "run_cmd_out2": "tmp-stderr.tmp",
         "run_output_files": [
@@ -43,6 +43,20 @@
       "run_time": {
         "output_invariant_of_repeat": "yes",
         "run_cmd_main": "$<<CK_ENV_COMPILER_PYTHON_FILE>>$ $<<CK_ENV_LIB_PYQUIL_EXAMPLES>>$/teleportation.py",
+        "run_cmd_out1": "tmp-stdout.tmp",
+        "run_cmd_out2": "tmp-stderr.tmp",
+        "run_output_files": [
+          "tmp-ck-timer.json",
+          "tmp-ck-output.bin",
+          "tmp-ck-output.json"
+        ]
+      }
+    },
+    "run-quil": {
+      "ignore_return_code": "no",
+      "run_time": {
+        "output_invariant_of_repeat": "yes",
+        "run_cmd_main": "$<<CK_ENV_COMPILER_PYTHON_FILE>>$ $<<CK_ENV_LIB_PYQUIL_EXAMPLES>>$/run_quil.py $<<QUIL_FILE>>$",
         "run_cmd_out1": "tmp-stdout.tmp",
         "run_cmd_out2": "tmp-stderr.tmp",
         "run_output_files": [

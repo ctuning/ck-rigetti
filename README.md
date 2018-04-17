@@ -89,3 +89,9 @@ $ ck run program:pyquil-demo --cmd_key=hello-world
 $ ck run program:pyquil-demo --cmd_key=teleportation
 ```
 
+#### Run a given .quil file (path relative to tmp directory or absolute)
+
+```
+$ ck run program:pyquil-demo --cmd_key=run-quil --env.QUIL_FILE=../set_and_measure.quil
+```
+
