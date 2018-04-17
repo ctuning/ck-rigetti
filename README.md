@@ -69,8 +69,23 @@ $ ck install package:lib-pyquil \
 ```
 
 
-## Run a simple test
+## Run some simple tests
+
+#### Run a demo program (select interactively from a menu)
+
 ```
-$ echo $HOME/CK/ck-rigetti/t/ck_pyquil_test.sh $HOME/CK/ck-rigetti/t/pyquil_test.py | ck virtual env --tags=pyquil
+$ ck run program:pyquil-demo
+```
+
+#### Run the hello-world demo (a Python runner + a .quil file)
+
+```
+$ ck run program:pyquil-demo --cmd_key=hello-world
+```
+
+#### Run the teleportation demo (a Python script)
+
+```
+$ ck run program:pyquil-demo --cmd_key=teleportation
 ```
 
