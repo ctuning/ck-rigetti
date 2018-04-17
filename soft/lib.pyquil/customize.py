@@ -89,11 +89,13 @@ def setup(i):
     full_path               = cus.get('full_path','')
     path_lib                = os.path.dirname(full_path)
     path_install            = os.path.dirname(path_lib)
+    path_pre_install        = os.path.dirname(path_install)
 
     env                     = i['env']
     env_prefix              = cus['env_prefix']
     env[env_prefix]         = path_install
     env[env_prefix+'_LIB']  = path_lib
+    env[env_prefix+'_EXAMPLES'] = os.path.join(path_pre_install,'src','examples')
 
     env['PYTHONPATH']       = path_install + ( ';%PYTHONPATH%' if winh=='yes' else ':${PYTHONPATH}')
 
