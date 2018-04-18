@@ -1,0 +1,63 @@
+# After changing this file, check it on:
+#   http://lint.travis-ci.org/
+
+os:         linux
+language:   python
+
+python:
+    - 2.7
+    - 3.6
+
+env:
+    matrix:
+        - TRAVIS_CK_WHICH_TEST=meyer-penny-game
+        - TRAVIS_CK_WHICH_TEST=teleportation
+        - TRAVIS_CK_WHICH_TEST=from-quil-file
+        - TRAVIS_CK_WHICH_TEST=from-quil-file QUIL_FILE=../teleport.quil
+
+matrix:
+    include:
+        - os: osx
+          language: generic
+          python:   2.7
+          env:      TRAVIS_CK_WHICH_TEST=from-quil-file QUIL_FILE=../teleport.quil
+        - os: osx
+          language: generic
+          python:   2.7
+          env:      TRAVIS_CK_WHICH_TEST=teleportation
+        - os: osx
+          language: generic
+          python:   3.6
+          env:      TRAVIS_CK_WHICH_TEST=from-quil-file QUIL_FILE=../teleport.quil
+        - os: osx
+          language: generic
+          python:   3.6
+          env:      TRAVIS_CK_WHICH_TEST=teleportation
+
+before_install:
+    - |
+        if [ $TRAVIS_OS_NAME == "osx" ]; then
+            brew update                                                         # this swaps python versions and makes 3 the default one
+            brew reinstall python                                               # install and link python3 and pip3 to /usr/local/bin
+            export PATH=/usr/local/opt/python/libexec/bin:$PATH
+            export CK_PLATFORM_INDEX=2                                          # used later by CK
+        else
+            sudo apt-get update -qq
+            sudo apt-get install python-pip
+            export CK_PLATFORM_INDEX=1                                          # used later by CK
+        fi
+
+install:
+    - echo "os=${TRAVIS_OS_NAME}, python=${TRAVIS_PYTHON_VERSION}, which_test=${TRAVIS_CK_WHICH_TEST}"
+    - which python
+    - python --version
+    - python -m pip install --ignore-installed --verbose pip setuptools         # make sure pip is also up to date no matter what
+    - python -m pip install -r requirements.txt                                 # ck kernel itself
+    - ck pull repo:ck-pyquil                                                    # trigger pulling dependent repositories
+    - echo $CK_PLATFORM_INDEX | ck detect platform.os --update_platform_init    # set the platform to generic-linux (1) or generic-macos (2)
+    -          ck detect soft:compiler.python --full_path=`which python`        # pick the one Travis has set for us in the PATH
+    -          ck install package:lib-pyquil                                    # have to install this again into CK's registered space
+
+script:
+    - ck run program:pyquil-demo --cmd_key=${TRAVIS_CK_WHICH_TEST} ${QUIL_FILE:+--env.QUIL_FILE=${QUIL_FILE}}
+
