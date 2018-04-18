@@ -77,21 +77,21 @@ $ ck install package:lib-pyquil \
 $ ck run program:pyquil-demo
 ```
 
-#### Run the hello-world demo (a Python runner + a .quil file)
+#### Run the hello-world demo (a Python runner + default hello_world.quil file)
 
 ```
-$ ck run program:pyquil-demo --cmd_key=hello-world
-```
-
-#### Run the teleportation demo (a Python script)
-
-```
-$ ck run program:pyquil-demo --cmd_key=teleportation
+$ ck run program:pyquil-demo --cmd_key=from-quil-file
 ```
 
 #### Run a given .quil file (path relative to tmp directory or absolute)
 
 ```
-$ ck run program:pyquil-demo --cmd_key=run-quil --env.QUIL_FILE=../set_and_measure.quil
+$ ck run program:pyquil-demo --cmd_key=from-quil-file --env.QUIL_FILE=../teleport.quil
+```
+
+#### Run the dedicated teleportation demo in Python
+
+```
+$ ck run program:pyquil-demo --cmd_key=teleportation
 ```
 

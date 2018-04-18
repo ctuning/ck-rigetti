@@ -10,20 +10,6 @@
   "process_in_tmp": "yes",
   "program": "yes",
   "run_cmds": {
-    "hello-world": {
-      "ignore_return_code": "no",
-      "run_time": {
-        "output_invariant_of_repeat": "yes",
-        "run_cmd_main": "$<<CK_ENV_COMPILER_PYTHON_FILE>>$ $<<CK_ENV_LIB_PYQUIL_EXAMPLES>>$/run_quil.py ../hello_world.quil",
-        "run_cmd_out1": "tmp-stdout.tmp",
-        "run_cmd_out2": "tmp-stderr.tmp",
-        "run_output_files": [
-          "tmp-ck-timer.json",
-          "tmp-ck-output.bin",
-          "tmp-ck-output.json"
-        ]
-      }
-    },
     "meyer-penny-game": {
       "ignore_return_code": "no",
       "run_time": {
@@ -52,7 +38,7 @@
         ]
       }
     },
-    "run-quil": {
+    "from-quil-file": {
       "ignore_return_code": "no",
       "run_time": {
         "output_invariant_of_repeat": "yes",
@@ -77,6 +63,7 @@
     }
   },
   "run_vars": {
+    "QUIL_FILE":    "../hello_world.quil"
   },
   "tags": [
     "pyquil",

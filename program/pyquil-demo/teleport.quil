@@ -1,0 +1,34 @@
+## Setting the input to 1 (it defaults to 0)
+# X 11
+
+## Rotate the input around X by 1.3 radians:
+RX(1.3) 11
+
+## Create Bell Pair:
+H 22
+CNOT 22 33
+
+## Teleport:
+CNOT 11 22
+H 11
+
+## Take classical measurements that destroy states:
+MEASURE 11 [5]
+MEASURE 22 [6]
+
+## Classically communicate measurements:
+JUMP-UNLESS @ENDIF1 [6]
+X 33
+LABEL @ENDIF1
+
+JUMP-UNLESS @ENDIF2 [5]
+Z 33
+LABEL @ENDIF2
+
+## Undo the original rotation around X by 1.3 radians:
+## (it was introduced for input, now we perform the reverse on the output)
+#
+RX(-1.3) 33
+
+## This should contain the state we originally sent:
+MEASURE 33 [7]
