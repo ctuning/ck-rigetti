@@ -1,5 +1,7 @@
 # ck-rigetti
 
+[![Travis Build Status](https://travis-ci.org/ctuning/ck-rigetti.svg?branch=master)](https://travis-ci.org/ctuning/ck-rigetti)
+
 
 * [pyQuil's code](https://github.com/rigetticomputing/pyquil) on gitHub.
 * [pyQuil's official documentation](http://pyquil.readthedocs.io/en/latest/) on ReadTheDocs.
