@@ -97,3 +97,7 @@ $ ck run program:pyquil-demo --cmd_key=from-quil-file --env.QUIL_FILE=../telepor
 $ ck run program:pyquil-demo --cmd_key=teleportation
 ```
 
+#### Run a given pyQuil example (path relative to pyQuil example directory in CK-TOOLS)
+```
+$ ck run program:pyquil-demo --cmd_key=from-pyquil-examples --env.PYQUIL_EXAMPLE=pointer.py
+```

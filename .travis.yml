@@ -11,7 +11,7 @@ python:
 env:
     matrix:
         - TRAVIS_CK_WHICH_TEST=from-quil-file QUIL_FILE=../teleport.quil
-        - TRAVIS_CK_WHICH_TEST=teleportation
+        - TRAVIS_CK_WHICH_TEST=from-pyquil-examples PYQUIL_EXAMPLE=pointer.py
 
 matrix:
     include:
@@ -22,7 +22,7 @@ matrix:
         - os: osx
           language: generic
           python:   2.7
-          env:      TRAVIS_CK_WHICH_TEST=teleportation
+          env:      TRAVIS_CK_WHICH_TEST=from-pyquil-examples PYQUIL_EXAMPLE=pointer.py
         - os: osx
           language: generic
           python:   3.6
@@ -30,7 +30,7 @@ matrix:
         - os: osx
           language: generic
           python:   3.6
-          env:      TRAVIS_CK_WHICH_TEST=teleportation
+          env:      TRAVIS_CK_WHICH_TEST=from-pyquil-examples PYQUIL_EXAMPLE=pointer.py
 
 before_install:
     - |
