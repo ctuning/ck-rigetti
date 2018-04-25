@@ -101,3 +101,24 @@ $ ck run program:pyquil-demo --cmd_key=teleportation
 ```
 $ ck run program:pyquil-demo --cmd_key=from-pyquil-examples --env.PYQUIL_EXAMPLE=pointer.py
 ```
+
+
+## Run an interactive python session with access to CK-installed pyQuil
+
+#### shell-bound IPython session:
+```
+$ ck virtual env --tags=pyquil --shell_cmd=ipython
+
+In [1]: import pyquil
+
+In [2]: ...
+```
+
+#### Jupyter Notebook session in your browser:
+```
+$ ck virtual env --tags=pyquil --shell_cmd='jupyter notebook'
+
+In [1]: import pyquil
+
+In [2]: ...
+```
