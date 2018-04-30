@@ -19,45 +19,52 @@ matrix:
         - os: osx
           language: generic
           python:   2.7
-          env:      TRAVIS_CK_WHICH_TEST=from-quil-file QUIL_FILE=../teleport.quil
+          env:      WANTED_PYTHON_VERSION=2.7 TRAVIS_CK_WHICH_TEST=from-quil-file QUIL_FILE=../teleport.quil
         - os: osx
           language: generic
           python:   2.7
-          env:      TRAVIS_CK_WHICH_TEST=from-pyquil-examples PYQUIL_EXAMPLE=pointer.py
+          env:      WANTED_PYTHON_VERSION=2.7 TRAVIS_CK_WHICH_TEST=from-pyquil-examples PYQUIL_EXAMPLE=pointer.py
         - os: osx
           language: generic
           python:   2.7
-          env:      TRAVIS_CK_WHICH_TEST=vqe_helium
+          env:      WANTED_PYTHON_VERSION=2.7 TRAVIS_CK_WHICH_TEST=vqe_helium
         - os: osx
           language: generic
           python:   3.6
-          env:      TRAVIS_CK_WHICH_TEST=from-quil-file QUIL_FILE=../teleport.quil
+          env:      WANTED_PYTHON_VERSION=3.6 TRAVIS_CK_WHICH_TEST=from-quil-file QUIL_FILE=../teleport.quil
         - os: osx
           language: generic
           python:   3.6
-          env:      TRAVIS_CK_WHICH_TEST=from-pyquil-examples PYQUIL_EXAMPLE=pointer.py
+          env:      WANTED_PYTHON_VERSION=3.6 TRAVIS_CK_WHICH_TEST=from-pyquil-examples PYQUIL_EXAMPLE=pointer.py
         - os: osx
           language: generic
           python:   3.6
-          env:      TRAVIS_CK_WHICH_TEST=vqe_helium
+          env:      WANTED_PYTHON_VERSION=3.6 TRAVIS_CK_WHICH_TEST=vqe_helium
 
 before_install:
     - |
         if [ $TRAVIS_OS_NAME == "osx" ]; then
             brew update                                                         # this swaps python versions and makes 3 the default one
-            brew reinstall python                                               # install and link python3 and pip3 to /usr/local/bin
+
+            if [ "$WANTED_PYTHON_VERSION" == "2.7" ]; then
+                brew reinstall python\@2 || brew link --overwrite python\@2     # install and link python2 and pip2 to /usr/local/bin
+            else
+                brew reinstall python                                           # install and link python3 and pip3 to /usr/local/bin
+            fi
             export PATH=/usr/local/opt/python/libexec/bin:$PATH
+
             export CK_PLATFORM_INDEX=2                                          # used later by CK
         else
             sudo apt-get update -qq
             sudo apt-get install python-pip
+            export WANTED_PYTHON_VERSION=$TRAVIS_PYTHON_VERSION                 # since Python is supported in Linux, get it from Travis
             export CK_PLATFORM_INDEX=1                                          # used later by CK
         fi
 
 install:
     - CWD=`pwd`
     - THIS_REPO_NAME=`basename $CWD`
-    - echo "os=${TRAVIS_OS_NAME}, python=${TRAVIS_PYTHON_VERSION}, which_test=${TRAVIS_CK_WHICH_TEST}"
+    - echo "os=${TRAVIS_OS_NAME}, python=${WANTED_PYTHON_VERSION}, which_test=${TRAVIS_CK_WHICH_TEST}"
     - which python
     - python --version
     - python -m pip install --ignore-installed --verbose pip setuptools         # make sure pip is also up to date no matter what
