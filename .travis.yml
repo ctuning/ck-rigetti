@@ -12,6 +12,7 @@ env:
     matrix:
         - TRAVIS_CK_WHICH_TEST=from-quil-file QUIL_FILE=../teleport.quil
         - TRAVIS_CK_WHICH_TEST=from-pyquil-examples PYQUIL_EXAMPLE=pointer.py
+        - TRAVIS_CK_WHICH_TEST=vqe_helium
 
 matrix:
     include:
@@ -25,12 +26,20 @@ matrix:
           env:      TRAVIS_CK_WHICH_TEST=from-pyquil-examples PYQUIL_EXAMPLE=pointer.py
         - os: osx
           language: generic
+          python:   2.7
+          env:      TRAVIS_CK_WHICH_TEST=vqe_helium
+        - os: osx
+          language: generic
           python:   3.6
           env:      TRAVIS_CK_WHICH_TEST=from-quil-file QUIL_FILE=../teleport.quil
         - os: osx
           language: generic
           python:   3.6
           env:      TRAVIS_CK_WHICH_TEST=from-pyquil-examples PYQUIL_EXAMPLE=pointer.py
+        - os: osx
+          language: generic
+          python:   3.6
+          env:      TRAVIS_CK_WHICH_TEST=vqe_helium
 
 before_install:
     - |
@@ -59,7 +68,12 @@ install:
     -          ck install package:lib-pyquil                                    # have to install this again into CK's registered space
 
 script:
-    - ck run program:pyquil-demo --cmd_key=${TRAVIS_CK_WHICH_TEST} ${QUIL_FILE:+--env.QUIL_FILE=${QUIL_FILE}}
+    - |
+        if [ $TRAVIS_CK_WHICH_TEST == "vqe_helium" ]; then
+            ck run program:vqe-demo --env.VQE_MAX_ITERATIONS=10
+        else
+            ck run program:pyquil-demo --cmd_key=${TRAVIS_CK_WHICH_TEST} ${QUIL_FILE:+--env.QUIL_FILE=${QUIL_FILE}}
+        fi
 
 notifications:
     email:
