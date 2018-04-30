@@ -7,6 +7,12 @@
     }
   }, 
   "deps": {
+    "forest login": {
+      "local": "yes",
+      "name": "Rigetti Forest credentials",
+      "sort": 5,
+      "tags": "forest,login"
+    },
     "python": {
       "local": "yes",
       "name": "Python interpreter",

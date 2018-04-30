@@ -99,14 +99,4 @@ def setup(i):
 
     env['PYTHONPATH']       = path_install + ( ';%PYTHONPATH%' if winh=='yes' else ':${PYTHONPATH}')
 
-    install_env             = cus.get('install_env',{})
-    forest_api_key          = install_env.get('PYQUIL_FOREST_API_KEY',  os.environ.get('PYQUIL_FOREST_API_KEY',''))
-    user_id                 = install_env.get('PYQUIL_USER_ID',         os.environ.get('PYQUIL_USER_ID',''))
-
-    if forest_api_key and user_id:
-        env['QVM_API_KEY']  = forest_api_key
-        env['QVM_USER_ID']  = user_id
-    else:
-        return {'return':1, 'error':'Environment variables PYQUIL_FOREST_API_KEY and PYQUIL_USER_ID should be set!'}
-
     return {'return':0, 'bat':''}

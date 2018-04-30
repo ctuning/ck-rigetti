@@ -65,9 +65,9 @@ $ ck list ck-rigetti:package:*
 ### Install CK package for pyQuil (insert your api_key and user_id that you obtained by registering - see above)
 
 ```
-$ ck install package:lib-pyquil \
-        --env.PYQUIL_FOREST_API_KEY=xnmRPAVunQl19TtQz9eMd11iiIsArtUDTaEnsSV6uy \
-        --env.PYQUIL_USER_ID=015a1263b-d7f2-426d-b2f5-2fe2e9727d1d0
+$ env PYQUIL_FOREST_API_KEY=xnmRPAVunQl19TtQz9eMd11iiIsArtUDTaEnsSV6ux \
+      PYQUIL_USER_ID=015a1263b-d7f2-426d-b2f5-2fe2e9727d1d0 \
+      ck install package:lib-pyquil
 ```
 
 
