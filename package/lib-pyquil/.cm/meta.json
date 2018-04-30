@@ -34,8 +34,8 @@
   "suggested_path": "lib-pyquil",
   "tags": [
     "lib",
-    "pyquil",
     "quantum",
-    "vcpu"
+    "rigetti",
+    "pyquil"
   ]
 }
