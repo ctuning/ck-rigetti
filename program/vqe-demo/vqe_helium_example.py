@@ -5,6 +5,7 @@ This module runs DaoChen's version Variational-Quantum-Eigensolver on Helium
 """
 
 import sys
+import json
 
 import numpy as np
 from scipy.optimize import minimize
@@ -14,6 +15,13 @@ from pyquil.quil import Program
 from pyquil.paulis import PauliTerm
 from pyquil.gates import *
 
+# See https://stackoverflow.com/questions/26646362/numpy-array-is-not-json-serializable
+#
+class NumpyEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, np.ndarray):
+            return obj.tolist()
+        return json.JSONEncoder.default(self, obj)
 
 def daochens_vqe(qvm, hamiltonian, minimizer_method, max_iterations, sample_number):
 
@@ -127,6 +135,10 @@ if __name__ == '__main__':
 
     qvm = api.QVMConnection()
 
-    output = daochens_vqe(qvm, hamiltonian, minimizer_method, max_iterations, sample_number)
-    print(output)
+    input_structure = { "minimizer_method" : minimizer_method, "max_iterations": max_iterations, "sample_number" : sample_number }
+    output_structure = daochens_vqe(qvm, hamiltonian, minimizer_method, max_iterations, sample_number)
+    output_dict = { "vqe_input" : input_structure, "vqe_output" : output_structure }
+    print(output_dict)
+    with open('vqe_output.json', 'w') as json_file:
+        json.dump(output_dict, json_file, cls=NumpyEncoder, sort_keys = True, indent = 4)
 
