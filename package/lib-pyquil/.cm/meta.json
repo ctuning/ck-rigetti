@@ -22,7 +22,6 @@
     }
   }, 
   "end_full_path_universal": "build$#sep#$pyquil$#sep#$__init__.py", 
-  "need_cpu_info": "yes", 
   "only_for_host_os_tags": [
     "linux"
   ], 
