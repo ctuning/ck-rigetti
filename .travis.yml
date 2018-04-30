@@ -61,3 +61,8 @@ install:
 script:
     - ck run program:pyquil-demo --cmd_key=${TRAVIS_CK_WHICH_TEST} ${QUIL_FILE:+--env.QUIL_FILE=${QUIL_FILE}}
 
+notifications:
+    email:
+        on_success: always
+        on_failure: always
+
