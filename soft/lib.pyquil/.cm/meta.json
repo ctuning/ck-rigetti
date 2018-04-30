@@ -11,10 +11,11 @@
       "linux": "pyquil/__init__.py"
     }
   }, 
-  "soft_name": "pyQuil",
+  "soft_name": "Rigetti pyQuil library",
   "tags": [
     "lib", 
-    "pyquil",
-    "quantum"
+    "quantum",
+    "rigetti",
+    "pyquil"
   ]
 }
