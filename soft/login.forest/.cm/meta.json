@@ -1,0 +1,25 @@
+{
+  "auto_detect": "yes", 
+  "customize": {
+    "check_that_exists": "yes", 
+    "env_prefix": "CK_ENV_RIGETTI_FOREST_LOGIN", 
+    "limit_recursion_dir_search": {
+      "linux": 1, 
+      "win": 1
+    }, 
+    "soft_file": {
+      "linux": ".bashrc"
+    }
+  }, 
+  "soft_name": "Rigetti Forest Login", 
+  "tags": [
+    "login",
+    "quantum",
+    "rigetti",
+    "forest",
+    "api_key",
+    "user_id",
+    "credentials",
+    "password"
+  ]
+}
