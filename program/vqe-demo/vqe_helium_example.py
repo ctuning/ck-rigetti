@@ -6,6 +6,7 @@ This module runs DaoChen's version Variational-Quantum-Eigensolver on Helium
 
 import sys
 import json
+import time
 
 import numpy as np
 from scipy.optimize import minimize
@@ -25,14 +26,19 @@ class NumpyEncoder(json.JSONEncoder):
 
 def daochens_vqe(qvm, ansatz, hamiltonian, start_params, minimizer_method, max_iterations, sample_number):
 
-    def expectation_estimation(state_program, ham_paulisum):
+    def expectation_estimation(ab, quantum_time):
         """
             instead of using Rigetti's VQE instance as is, we have taken it apart to help us improve it 
             TODO: change the expectation-estimation algorithm according to our paper arXiv:1802.00171
         """
         
+        state_program = ansatz(ab)
         expectation = 0.0   
-        for j, term in enumerate(ham_paulisum.terms):
+
+        q_time_this_iteration = { 'total_q_seconds_per_c_iteration' : 0.0, 'seconds_per_individual_q_run' : [] }
+        total_q_seconds_per_c_iteration = 0.0
+        seconds_per_individual_q_run = []
+        for j, term in enumerate(hamiltonian.terms):
             meas_basis_change = Program()
             qubits_to_measure = []
             if term.id() == "":
@@ -54,26 +60,36 @@ def daochens_vqe(qvm, ansatz, hamiltonian, start_params, minimizer_method, max_i
                         meas_prog.measure(qindex, qindex)
                         
                     # our own short program to get the expectation.
+                    ts_before = time.time()
                     result = qvm.run(meas_prog, qubits_to_measure, sample_number)
+                    ts_after = time.time()
+
+                    ts_difference   = ts_after - ts_before
                     meas_outcome = np.sum([np.power(-1, np.sum(x)) for x in result])/sample_number
-                    
+
+                    q_time_this_iteration['total_q_seconds_per_c_iteration'] += ts_difference
+                    q_time_this_iteration['seconds_per_individual_q_run'].append( ts_difference )
+
             expectation += term.coefficient * meas_outcome
-                                                                            
-        return expectation.real
 
-    def energy(ab):
-        "this is the energy function to minimise"
+        energy = expectation.real
 
-        ee = expectation_estimation(ansatz(ab), hamiltonian)
+        print('Q seconds = ', q_time_this_iteration)
+        print('energy = %f' % energy)
+        print('')
 
-        print(ab)
-        print(ee)
-        print()
+        quantum_time['total_q_seconds'] += q_time_this_iteration['total_q_seconds_per_c_iteration']
+        quantum_time['iterations'].append( q_time_this_iteration )
 
-        return ee
+        return energy
+
+    quantum_time = { 'total_q_seconds': 0, 'iterations' : [] }
 
     # we fix the maximum number of function evaluations to allow for benchmarking
-    return minimize(energy, start_params, method = minimizer_method, options = {'maxfev': max_iterations})
+    optimizer_output = minimize(expectation_estimation, start_params, args=(quantum_time), method = minimizer_method, options = {'maxfev': max_iterations})
+
+    print('Q seconds in total = %f' % quantum_time['total_q_seconds'])
+    return (optimizer_output, quantum_time)
 
     # the "correct answer" is: -2.8551604772427424 a.u.
     # this number now serves as an "application-based" benchmarking tool
@@ -138,10 +154,14 @@ if __name__ == '__main__':
 
     qvm = api.QVMConnection()
 
-    input_structure = { "minimizer_method" : minimizer_method, "max_iterations": max_iterations, "sample_number" : sample_number }
-    output_structure = daochens_vqe(qvm, ansatz, hamiltonian, start_params, minimizer_method, max_iterations, sample_number)
-    output_dict = { "vqe_input" : input_structure, "vqe_output" : output_structure }
-    print(output_dict)
+    vqe_input = { "minimizer_method" : minimizer_method, "max_iterations": max_iterations, "sample_number" : sample_number }
+    (vqe_output, quantum_time) = daochens_vqe(qvm, ansatz, hamiltonian, start_params, minimizer_method, max_iterations, sample_number)
+
+    output_dict     = { "vqe_input" : vqe_input, "vqe_output" : vqe_output, "quantum_time" : quantum_time }
+    formatted_json  = json.dumps(output_dict, cls=NumpyEncoder, sort_keys = True, indent = 4)
+
+#    print(formatted_json)
+
     with open('vqe_output.json', 'w') as json_file:
-        json.dump(output_dict, json_file, cls=NumpyEncoder, sort_keys = True, indent = 4)
+        json_file.write( formatted_json )
 
