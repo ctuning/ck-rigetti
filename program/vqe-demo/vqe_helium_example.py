@@ -23,32 +23,7 @@ class NumpyEncoder(json.JSONEncoder):
             return obj.tolist()
         return json.JSONEncoder.default(self, obj)
 
-def daochens_vqe(qvm, hamiltonian, minimizer_method, max_iterations, sample_number):
-
-    def tiny_ansatz(ab):  
-        "in this trial, we also explicitly supply the UCC ansatz"
-
-        a = ab[0];
-        b = ab[1];
-        p = Program(
-        X(0),
-        X(1),
-        RX(np.pi/2, 0),
-        H(1),
-        CNOT(0, 1),
-        RZ(a)(1),
-        CNOT(0, 1),
-        RX(-np.pi/2)(0),
-        H(1),
-        H(0),
-        RX(np.pi/2)(1),
-        CNOT(0, 1),
-        RZ(b)(1),
-        CNOT(0, 1),
-        H(0),
-        RX(-np.pi/2, 1))
-
-        return p
+def daochens_vqe(qvm, ansatz, hamiltonian, start_params, minimizer_method, max_iterations, sample_number):
 
     def expectation_estimation(state_program, ham_paulisum):
         """
@@ -89,7 +64,7 @@ def daochens_vqe(qvm, hamiltonian, minimizer_method, max_iterations, sample_numb
     def energy(ab):
         "this is the energy function to minimise"
 
-        ee = expectation_estimation(tiny_ansatz(ab), hamiltonian)
+        ee = expectation_estimation(ansatz(ab), hamiltonian)
 
         print(ab)
         print(ee)
@@ -98,10 +73,36 @@ def daochens_vqe(qvm, hamiltonian, minimizer_method, max_iterations, sample_numb
         return ee
 
     # we fix the maximum number of function evaluations to allow for benchmarking
-    return minimize(energy, [1, 1], method = minimizer_method, options = {'maxfev': max_iterations})
+    return minimize(energy, start_params, method = minimizer_method, options = {'maxfev': max_iterations})
 
     # the "correct answer" is: -2.8551604772427424 a.u.
     # this number now serves as an "application-based" benchmarking tool
+
+
+def helium_tiny_ansatz(ab):
+    "in this trial, we also explicitly supply the UCC ansatz"
+
+    a = ab[0];
+    b = ab[1];
+    p = Program(
+    X(0),
+    X(1),
+    RX(np.pi/2, 0),
+    H(1),
+    CNOT(0, 1),
+    RZ(a)(1),
+    CNOT(0, 1),
+    RX(-np.pi/2)(0),
+    H(1),
+    H(0),
+    RX(np.pi/2)(1),
+    CNOT(0, 1),
+    RZ(b)(1),
+    CNOT(0, 1),
+    H(0),
+    RX(-np.pi/2, 1))
+
+    return p
 
 if __name__ == '__main__':
     if len(sys.argv)!=4:
@@ -132,11 +133,13 @@ if __name__ == '__main__':
         0.7019459893849936*PauliTerm('Z',0) + \
         0.263928235683768058*PauliTerm.from_list([("Z", 0), ("Z", 1)]) + \
         0.7019459893849936*PauliTerm('Z',1)
+    ansatz = helium_tiny_ansatz
+    start_params = [1, 1]
 
     qvm = api.QVMConnection()
 
     input_structure = { "minimizer_method" : minimizer_method, "max_iterations": max_iterations, "sample_number" : sample_number }
-    output_structure = daochens_vqe(qvm, hamiltonian, minimizer_method, max_iterations, sample_number)
+    output_structure = daochens_vqe(qvm, ansatz, hamiltonian, start_params, minimizer_method, max_iterations, sample_number)
     output_dict = { "vqe_input" : input_structure, "vqe_output" : output_structure }
     print(output_dict)
     with open('vqe_output.json', 'w') as json_file:
