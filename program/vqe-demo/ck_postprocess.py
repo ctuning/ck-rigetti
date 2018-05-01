@@ -19,8 +19,10 @@ def ck_postprocess(i):
     for line in r['lst']:
         ls = line.split('\t')
 # END 
-    d['prediction_time_s'] = 1.123
-    if d.has_key('prediction_time_s'):
+    d['execution_time'] = 1.100
+
+
+    if d.has_key('execution_time'):
         d['post_processed'] = 'yes'
     rr={}
     rr['return']=0
