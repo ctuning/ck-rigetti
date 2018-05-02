@@ -26,16 +26,18 @@ class NumpyEncoder(json.JSONEncoder):
 
 def daochens_vqe(qvm, ansatz, hamiltonian, start_params, minimizer_method, max_iterations, sample_number):
 
-    def expectation_estimation(ab, quantum_time):
+    def expectation_estimation(ab, report):
         """
             instead of using Rigetti's VQE instance as is, we have taken it apart to help us improve it 
             TODO: change the expectation-estimation algorithm according to our paper arXiv:1802.00171
         """
         
+        timestamp_before_ee = time.time()
+
         state_program = ansatz(ab)
         expectation = 0.0   
 
-        q_time_this_iteration = { 'total_q_seconds_per_c_iteration' : 0.0, 'seconds_per_individual_q_run' : [] }
+        report_this_iteration = { 'total_q_seconds_per_c_iteration' : 0.0, 'seconds_per_individual_q_run' : [] }
         for j, term in enumerate(hamiltonian.terms):
             meas_basis_change = Program()
             qubits_to_measure = []
@@ -58,36 +60,47 @@ def daochens_vqe(qvm, ansatz, hamiltonian, start_params, minimizer_method, max_i
                         meas_prog.measure(qindex, qindex)
                         
                     # our own short program to get the expectation.
-                    ts_before = time.time()
+                    timestamp_before_qvm = time.time()
                     result = qvm.run(meas_prog, qubits_to_measure, sample_number)
-                    ts_after = time.time()
+                    timestamp_after_qvm = time.time()
 
-                    ts_difference = ts_after - ts_before
+                    q_run_seconds = timestamp_after_qvm - timestamp_before_qvm
                     meas_outcome = np.sum([np.power(-1, np.sum(x)) for x in result])/sample_number
 
-                    q_time_this_iteration['total_q_seconds_per_c_iteration'] += ts_difference # total_q_time_per_iteration
-                    q_time_this_iteration['seconds_per_individual_q_run'].append( ts_difference ) # q_time_per_iteration
+                    report_this_iteration['total_q_seconds_per_c_iteration'] += q_run_seconds # total_q_time_per_iteration
+                    report_this_iteration['seconds_per_individual_q_run'].append( q_run_seconds ) # q_time_per_iteration
 
             expectation += term.coefficient * meas_outcome
 
         energy = expectation.real
+        report_this_iteration['energy'] = energy
 
-        print('Q seconds = ', q_time_this_iteration)
-        print('energy = %f' % energy)
-        print('')
+        report['iterations'].append( report_this_iteration )
+        report['total_q_seconds'] += report_this_iteration['total_q_seconds_per_c_iteration']  # total_q_time += total
 
-        quantum_time['total_q_seconds'] += q_time_this_iteration['total_q_seconds_per_c_iteration']  # total_q_time += total
-        quantum_time['iterations'].append( q_time_this_iteration )
+        timestamp_after_ee = time.time()
+
+        report_this_iteration['total_seconds_per_c_iteration'] = timestamp_after_ee - timestamp_before_ee
+
+        print(report_this_iteration, "\n")
 
         return energy
 
-    quantum_time = { 'total_q_seconds': 0, 'iterations' : [] }
+    report = { 'total_q_seconds': 0, 'iterations' : [] }
 
     # we fix the maximum number of function evaluations to allow for benchmarking
-    optimizer_output = minimize(expectation_estimation, start_params, args=(quantum_time), method = minimizer_method, options = {'maxfev': max_iterations})
+    timestamp_before_optimizer = time.time()
+    optimizer_output = minimize(expectation_estimation, start_params, args=(report), method = minimizer_method, options = {'maxfev': max_iterations})
+    timestamp_after_optimizer = time.time()
 
-    print('Q seconds in total = %f' % quantum_time['total_q_seconds'])
-    return (optimizer_output, quantum_time)
+    total_optimization_seconds = timestamp_after_optimizer - timestamp_before_optimizer
+
+    report['total_seconds'] = total_optimization_seconds
+
+    print('Total Q seconds = %f' % report['total_q_seconds'])
+    print('Total seconds = %f' % report['total_seconds'])
+
+    return (optimizer_output, report)
 
     # the "correct answer" is: -2.8551604772427424 a.u.
     # this number now serves as an "application-based" benchmarking tool
@@ -153,9 +166,9 @@ if __name__ == '__main__':
     qvm = api.QVMConnection()
 
     vqe_input = { "minimizer_method" : minimizer_method, "max_iterations": max_iterations, "sample_number" : sample_number }
-    (vqe_output, quantum_time) = daochens_vqe(qvm, ansatz, hamiltonian, start_params, minimizer_method, max_iterations, sample_number)
+    (vqe_output, report) = daochens_vqe(qvm, ansatz, hamiltonian, start_params, minimizer_method, max_iterations, sample_number)
 
-    output_dict     = { "vqe_input" : vqe_input, "vqe_output" : vqe_output, "quantum_time" : quantum_time }
+    output_dict     = { "vqe_input" : vqe_input, "vqe_output" : vqe_output, "report" : report }
     formatted_json  = json.dumps(output_dict, cls=NumpyEncoder, sort_keys = True, indent = 4)
 
 #    print(formatted_json)
