@@ -13,7 +13,7 @@
     "vqe-helium-example": {
       "ignore_return_code": "no", 
       "run_time": {
-        "fine_grain_timer_file": "vqe_output.json",
+        "fine_grain_timer_file": "vqe_report.json",
         "post_process_via_ck": "yes",
         "post_process_cmds":[
           "python $#src_path_local#$ck_postprocess.py"
@@ -23,7 +23,7 @@
         "run_cmd_out1": "tmp-stdout.tmp", 
         "run_cmd_out2": "tmp-stderr.tmp", 
         "run_output_files": [
-          "vqe_output.json"
+          "vqe_report.json"
         ]
       }
     }

@@ -27,7 +27,7 @@ def ck_postprocess(i):
     rr={}
     rr['return']=0
     if d.get('post_processed','')=='yes':
-        r=ck.save_json_to_file({'json_file':'vqe_output.json', 'dict':d})
+        r=ck.save_json_to_file({'json_file':'vqe_report.json', 'dict':d})
         if r['return']>0: return r
     else:
        rr['return']=1

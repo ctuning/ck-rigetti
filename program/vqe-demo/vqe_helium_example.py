@@ -173,6 +173,6 @@ if __name__ == '__main__':
 
 #    print(formatted_json)
 
-    with open('vqe_output.json', 'w') as json_file:
+    with open('vqe_report.json', 'w') as json_file:
         json_file.write( formatted_json )
 
