@@ -36,8 +36,6 @@ def daochens_vqe(qvm, ansatz, hamiltonian, start_params, minimizer_method, max_i
         expectation = 0.0   
 
         q_time_this_iteration = { 'total_q_seconds_per_c_iteration' : 0.0, 'seconds_per_individual_q_run' : [] }
-        total_q_seconds_per_c_iteration = 0.0
-        seconds_per_individual_q_run = []
         for j, term in enumerate(hamiltonian.terms):
             meas_basis_change = Program()
             qubits_to_measure = []
@@ -64,11 +62,11 @@ def daochens_vqe(qvm, ansatz, hamiltonian, start_params, minimizer_method, max_i
                     result = qvm.run(meas_prog, qubits_to_measure, sample_number)
                     ts_after = time.time()
 
-                    ts_difference   = ts_after - ts_before
+                    ts_difference = ts_after - ts_before
                     meas_outcome = np.sum([np.power(-1, np.sum(x)) for x in result])/sample_number
 
-                    q_time_this_iteration['total_q_seconds_per_c_iteration'] += ts_difference
-                    q_time_this_iteration['seconds_per_individual_q_run'].append( ts_difference )
+                    q_time_this_iteration['total_q_seconds_per_c_iteration'] += ts_difference # total_q_time_per_iteration
+                    q_time_this_iteration['seconds_per_individual_q_run'].append( ts_difference ) # q_time_per_iteration
 
             expectation += term.coefficient * meas_outcome
 
@@ -78,7 +76,7 @@ def daochens_vqe(qvm, ansatz, hamiltonian, start_params, minimizer_method, max_i
         print('energy = %f' % energy)
         print('')
 
-        quantum_time['total_q_seconds'] += q_time_this_iteration['total_q_seconds_per_c_iteration']
+        quantum_time['total_q_seconds'] += q_time_this_iteration['total_q_seconds_per_c_iteration']  # total_q_time += total
         quantum_time['iterations'].append( q_time_this_iteration )
 
         return energy
