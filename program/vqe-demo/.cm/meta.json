@@ -14,11 +14,7 @@
       "ignore_return_code": "no", 
       "run_time": {
         "fine_grain_timer_file": "vqe_report.json",
-        "post_process_via_ck": "yes",
-        "post_process_cmds":[
-          "python $#src_path_local#$ck_postprocess.py"
-        ],
-        "output_invariant_of_repeat": "yes", 
+        "output_invariant_of_repeat": "no",
         "run_cmd_main": "$<<CK_ENV_COMPILER_PYTHON_FILE>>$ ../vqe_helium_example.py $<<VQE_MINIMIZER_METHOD>>$ $<<VQE_MAX_ITERATIONS>>$ $<<VQE_SAMPLE_SIZE>>$", 
         "run_cmd_out1": "tmp-stdout.tmp", 
         "run_cmd_out2": "tmp-stderr.tmp", 
