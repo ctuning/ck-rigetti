@@ -5,20 +5,18 @@ import re
 import argparse
 
 
+# Program and command.
+program='vqe-demo'
+cmd_key='vqe-helium-example'
+
 # Platform tags.
-platform_tags='rigetti-remote'
-# Methods are strings iteration parameters.
 methods=["Nelder-Mead"]
-# OpenBLAS number of threads iteration parameters.
 iterations={
-  'start':80,
-  'stop': 120,
-  'step':20,
-  'default':10
+  'start':60,
+  'stop': 80,
+  'step':20
 }
-sample_sizes=[100, 1000, 10000]
-
-
+sample_sizes=[100, 1000]
 
 # Number of statistical repetitions.
 num_repetitions=3
@@ -40,11 +38,8 @@ def do(i, arg):
     tosd=r['os_dict']
     tdid=r['device_id']
 
-    # Program and command.
-    program='vqe-demo'
-    cmd_key='vqe-helium-example'
 
-    # Load Caffe program meta and desc to check deps.
+    # Load meta and desc of program:vqe-demo to check deps.
     ii={'action':'load',
         'module_uoa':'program',
         'data_uoa':program}
@@ -62,7 +57,6 @@ def do(i, arg):
         cdeps[k]=rdeps[k]
         cdeps[k]['for_run_time']='yes'
 
-    # Caffe libs.
     depl=copy.deepcopy(cdeps['lib-pyquil'])
     if (arg.tos is not None) and (arg.did is not None):
         tos=arg.tos
@@ -131,9 +125,6 @@ def do(i, arg):
     state=r['state']
     tmp_dir=state['tmp_dir']
 
-    # Remember resolved deps for this benchmarking session.
-    xcdeps=r.get('dependencies',{})
-
     # Clean pipeline.
     if 'ready' in r: del(r['ready'])
     if 'fail' in r: del(r['fail'])
@@ -141,24 +132,16 @@ def do(i, arg):
 
     pipeline=copy.deepcopy(r)
 
-    # For each Caffe lib.*******************************************************
     for lib_uoa in udepl:
-        # Load Caffe lib.
+        # Load pyQuil lib.
         ii={'action':'load',
             'module_uoa':'env',
             'data_uoa':lib_uoa}
         r=ck.access(ii)
         if r['return']>0: return r
-        # Get the tags from e.g. 'BVLC Caffe framework (libdnn,viennacl)'
         lib_name=r['data_name']
-#        TO FIX
-#        lib_tags=re.match('Rigetti pyQuil library \((?P<tags>.*)\)', lib_name)
-         
-#        lib_tags=lib_tags.group('tags').replace(' ', '').replace(',', '-')
-        # Skip some libs with "in [..]" or "not in [..]".
         lib_tags='rigetti-pyquil' 
         skip_compile='no'
-
 
         record_repo='local'
         record_uoa=lib_tags
@@ -206,9 +189,9 @@ def do(i, arg):
                 ]
             ],
             'choices_selection':[
-                {'type':'loop', 'choice':methods, 'default':"Nelder-Mead"},
-                {'type':'loop', 'start':iterations['start'], 'stop':iterations['stop'], 'step':iterations['step'], 'default':iterations['default']},
-                {'type':'loop', 'choice':sample_sizes, 'default':1000}
+                {'type':'loop', 'choice':methods},
+                {'type':'loop', 'start':iterations['start'], 'stop':iterations['stop'], 'step':iterations['step'] },
+                {'type':'loop', 'choice':sample_sizes}
             ],
 
             'features_keys_to_process':['##choices#*'],
