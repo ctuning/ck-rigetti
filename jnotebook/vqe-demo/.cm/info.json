@@ -1,0 +1,16 @@
+{
+  "backup_data_uid": "44b91db25b6053ac", 
+  "backup_module_uid": "145039462db4f4d2", 
+  "backup_module_uoa": "jnotebook", 
+  "control": {
+    "engine": "CK", 
+    "iso_datetime": "2018-05-04T12:56:09.382204", 
+    "version": [
+      "1", 
+      "9", 
+      "4", 
+      "1"
+    ]
+  }, 
+  "data_name": "vqe-demo"
+}
