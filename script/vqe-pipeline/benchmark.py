@@ -207,7 +207,7 @@ def do(i, arg):
             'record_repo':record_repo,
             'record_uoa':record_uoa,
 
-            'tags':[ 'explore-method-iteration-sample', cmd_key, lib_tags],
+            'tags':[ 'explore-method-iteration-sample', cmd_key, lib_tags ],
 
             'pipeline':cpipeline,
             'out':'con'}
