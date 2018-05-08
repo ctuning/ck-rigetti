@@ -26,7 +26,7 @@ class NumpyEncoder(json.JSONEncoder):
             return bool(obj)
         return json.JSONEncoder.default(self, obj)
 
-def daochens_vqe(qvm, ansatz, hamiltonian, start_params, minimizer_method, max_iterations, sample_number):
+def daochens_vqe(qvm, ansatz, hamiltonian, start_params, minimizer_method, minimizer_options, sample_number):
 
     def expectation_estimation(ab, report):
         """
@@ -92,7 +92,7 @@ def daochens_vqe(qvm, ansatz, hamiltonian, start_params, minimizer_method, max_i
 
     # we fix the maximum number of function evaluations to allow for benchmarking
     timestamp_before_optimizer = time.time()
-    optimizer_output = minimize(expectation_estimation, start_params, args=(report), method = minimizer_method, options = {'maxfev': max_iterations})
+    optimizer_output = minimize(expectation_estimation, start_params, args=(report), method = minimizer_method, options = minimizer_options)
     timestamp_after_optimizer = time.time()
 
     total_optimization_seconds = timestamp_after_optimizer - timestamp_before_optimizer
@@ -135,15 +135,15 @@ def helium_tiny_ansatz(ab):
 
 if __name__ == '__main__':
     if len(sys.argv)!=4:
-        print("Usage: "+sys.argv[0]+" <minimizer_method> <max_iterations> <sample_number>")
+        print("Usage: "+sys.argv[0]+" <minimizer_method> <max_function_evaluations> <sample_number>")
         exit(1)
 
-    minimizer_method    = sys.argv[1]
-    max_iterations      = int( sys.argv[2] )
-    sample_number       = int( sys.argv[3] )
+    minimizer_method            = sys.argv[1]
+    max_function_evaluations    = int( sys.argv[2] )
+    sample_number               = int( sys.argv[3] )
 
     print("Using minimizer_method='"+minimizer_method+"'")
-    print("Using max_iterations="+str(max_iterations))
+    print("Using max_function_evaluations="+str(max_function_evaluations))
     print("Using sample_number="+str(sample_number))
 
     # input molecule and basis set (this is the only user input necessary to perform VQE
@@ -167,9 +167,14 @@ if __name__ == '__main__':
 
     qvm = api.QVMConnection()
 
-    vqe_input = { "minimizer_method" : minimizer_method, "max_iterations": max_iterations, "sample_number" : sample_number }
-    (vqe_output, report) = daochens_vqe(qvm, ansatz, hamiltonian, start_params, minimizer_method, max_iterations, sample_number)
+    minimizer_options =  {
+        'Nelder-Mead':  {'maxfev':  max_function_evaluations},
+        'COBYLA':       {'maxiter': max_function_evaluations}
+            }[minimizer_method]
 
+    (vqe_output, report) = daochens_vqe(qvm, ansatz, hamiltonian, start_params, minimizer_method, minimizer_options, sample_number)
+
+    vqe_input       = { "minimizer_method" : minimizer_method, "minimizer_options": minimizer_options, "sample_number" : sample_number }
     output_dict     = { "vqe_input" : vqe_input, "vqe_output" : vqe_output, "report" : report }
     formatted_json  = json.dumps(output_dict, cls=NumpyEncoder, sort_keys = True, indent = 4)
 
