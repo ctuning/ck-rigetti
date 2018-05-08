@@ -22,6 +22,8 @@ class NumpyEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, np.ndarray):
             return obj.tolist()
+        elif isinstance(obj, np.bool_):
+            return bool(obj)
         return json.JSONEncoder.default(self, obj)
 
 def daochens_vqe(qvm, ansatz, hamiltonian, start_params, minimizer_method, max_iterations, sample_number):
