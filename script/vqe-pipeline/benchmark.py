@@ -3,26 +3,29 @@ import ck.kernel as ck
 import copy
 import re
 import argparse
-
+from time import strftime, gmtime
 
 # Program and command.
 program='vqe-demo'
 cmd_key='vqe-helium-example'
 
 # Platform tags.
-methods=["Nelder-Mead"]
-iterations={
+methods=["Nelder-Mead", "COBYLA"]
+function_evaluations={
   'start':60,
   'stop': 80,
   'step':20
 }
-sample_sizes=[100, 1000]
+sample_sizes=[200, 500, 1000, 2000]
 
 # Number of statistical repetitions.
 num_repetitions=3
 
 
 def do(i, arg):
+
+    timestamp=strftime("%Y_%m_%dT%H_%M_%S", gmtime())
+
     # Detect basic platform info.
     ii={'action':'detect',
         'module_uoa':'platform',
@@ -140,11 +143,11 @@ def do(i, arg):
         r=ck.access(ii)
         if r['return']>0: return r
         lib_name=r['data_name']
-        lib_tags='rigetti-pyquil' 
+        lib_tags='rigetti-qvm'
         skip_compile='no'
 
         record_repo='local'
-        record_uoa=lib_tags
+        record_uoa=lib_tags + '-' + timestamp
 
             # Prepare pipeline.
         ck.out('---------------------------------------------------------------------------------------')
@@ -190,7 +193,7 @@ def do(i, arg):
             ],
             'choices_selection':[
                 {'type':'loop', 'choice':methods},
-                {'type':'loop', 'start':iterations['start'], 'stop':iterations['stop'], 'step':iterations['step'] },
+                {'type':'loop', 'start':function_evaluations['start'], 'stop':function_evaluations['stop'], 'step':function_evaluations['step'] },
                 {'type':'loop', 'choice':sample_sizes}
             ],
 
@@ -207,10 +210,12 @@ def do(i, arg):
             'record_repo':record_repo,
             'record_uoa':record_uoa,
 
-            'tags':[ 'explore-method-iteration-sample', cmd_key, lib_tags ],
+            'tags':[ 'explore-method-iteration-sample', cmd_key, lib_tags, timestamp ],
 
             'pipeline':cpipeline,
             'out':'con'}
+
+        if arg.dry_run: continue
 
         r=ck.access(ii)
         if r['return']>0: return r
@@ -219,9 +224,11 @@ def do(i, arg):
         if fail=='yes':
             return {'return':10, 'error':'pipeline failed ('+r.get('fail_reason','')+')'}
             skip_compile='yes'
+
     return {'return':0}
 
 parser = argparse.ArgumentParser(description='Pipeline')
+parser.add_argument('--dry_run', action='store_true', dest='dry_run', default=False)
 parser.add_argument("--target_os", action="store", dest="tos")
 parser.add_argument("--device_id", action="store", dest="did")
 myarg=parser.parse_args()
