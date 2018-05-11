@@ -39,7 +39,7 @@ echo "Installing pyQuil to '${PACKAGE_LIB_DIR}' ..."
 
 EXAMPLE_REQ=`ls -1 $GIT_SRC_DIR/examples/requirements.txt 2>/dev/null`
 
-${CK_PYTHON_BIN} -m pip install $GIT_SRC_DIR ${EXAMPLE_REQ:+"--requirement=${EXAMPLE_REQ}"} --prefix=${EXTRA_PYTHON_SITE} --no-cache-dir # --ignore-installed
+${CK_ENV_COMPILER_PYTHON_FILE} -m pip install $GIT_SRC_DIR ${EXAMPLE_REQ:+"--requirement=${EXAMPLE_REQ}"} --prefix=${EXTRA_PYTHON_SITE} --no-cache-dir # --ignore-installed
 
 if [ "${?}" != "0" ] ; then
   echo "Error: installation failed!"
