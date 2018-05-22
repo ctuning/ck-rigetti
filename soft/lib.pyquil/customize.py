@@ -9,16 +9,22 @@ import os
 
 ##############################################################################
 
-def version_cmd(i):                     # FIXME: an extremely fragile approach - lots of assumptions:
+def version_cmd(i):
 
-    full_path=i['full_path']            # the full_path is to pyquil/__init__.py
+    path_with_init_py       = i['full_path']                            # the full_path that ends with PACKAGE_NAME/__init__.py
+    path_without_init_py    = os.path.dirname( path_with_init_py )
+    package_name            = os.path.basename( path_without_init_py )
+    ck                      = i['ck_kernel']
 
-    with open(full_path) as init_fd:    # this file only contains one line:     __version__ = "a.b.c"
-        contents = init_fd.read()
+    rx=ck.load_module_from_path({'path':path_without_init_py, 'module_code_name':'__init__', 'skip_init':'yes'})
+    if rx['return']==0:
+        loaded_package  = rx['code']
+        version_string  = loaded_package.__version__
+    else:
+        ck.out('Failed to import package '+package_name+' : '+rx['error'])
+        version_string  = ''
 
-    ver = (contents.split('"'))[1]      # assuming the format stays the same, get the stuff from between double quotes
-
-    return {'return':0, 'cmd':'', 'version':ver}
+    return {'return':0, 'cmd':'', 'version':version_string}
 
 ##############################################################################
 
