@@ -1,0 +1,56 @@
+{
+  "backup_data_uid": "ae41be73ab84d73a", 
+  "data_name": "rigetti-vqe", 
+  "no_compile": "yes", 
+  "no_target_file": "yes", 
+  "print_files_after_run": [
+    "tmp-stdout.tmp", 
+    "tmp-stderr.tmp"
+  ], 
+  "process_in_tmp": "yes", 
+  "program": "yes", 
+  "run_cmds": {
+    "vqe-helium-example": {
+      "ignore_return_code": "no", 
+      "run_time": {
+        "fine_grain_timer_file": "vqe_report.json", 
+        "output_invariant_of_repeat": "no", 
+        "run_cmd_main": "$<<CK_ENV_COMPILER_PYTHON_FILE>>$ ../vqe_helium_example.py $<<VQE_MINIMIZER_METHOD>>$ $<<VQE_MAX_ITERATIONS>>$ $<<VQE_SAMPLE_SIZE>>$", 
+        "run_cmd_out1": "tmp-stdout.tmp", 
+        "run_cmd_out2": "tmp-stderr.tmp", 
+        "run_output_files": [
+          "vqe_report.json"
+        ]
+      }
+    }
+  }, 
+  "run_deps": {
+    "lib-pyquil": {
+      "local": "yes", 
+      "name": "Rigetti pyQuil", 
+      "skip_pruning_by_other_deps": "yes", 
+      "sort": 20, 
+      "tags": "lib,pyquil,quantum"
+    },
+    "ck-quantum": {
+      "local": "yes",
+      "name": "ck-quantum",
+      "skip_pruning_by_other_deps": "yes",
+      "sort": 10,
+      "tags": "tool,python-package,ck-quantum,hackathon"
+    }
+  }, 
+  "run_vars": {
+    "VQE_MAX_ITERATIONS": 80, 
+    "VQE_MINIMIZER_METHOD": "Nelder-Mead", 
+    "VQE_SAMPLE_SIZE": 1000
+  }, 
+  "tags": [
+    "pyquil", 
+    "rigetti", 
+    "demo", 
+    "examples", 
+    "vqe", 
+    "helium"
+  ]
+}
