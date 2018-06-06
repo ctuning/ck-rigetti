@@ -16,7 +16,9 @@ from pyquil.quil import Program
 from pyquil.paulis import PauliTerm
 from pyquil.gates import *
 
+import inspect
 import hackathon
+
 # See https://stackoverflow.com/questions/26646362/numpy-array-is-not-json-serializable
 #
 class NumpyEncoder(json.JSONEncoder):
@@ -142,7 +144,11 @@ if __name__ == '__main__':
     minimizer_method            = sys.argv[1]
     max_function_evaluations    = int( sys.argv[2] )
     sample_number               = int( sys.argv[3] )
+
     print(hackathon.hello())
+    lines = inspect.getsource( hackathon.hello )
+    print( lines )
+
     print("Using minimizer_method='"+minimizer_method+"'")
     print("Using max_function_evaluations="+str(max_function_evaluations))
     print("Using sample_number="+str(sample_number))
