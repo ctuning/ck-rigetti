@@ -25,6 +25,13 @@
     }
   }, 
   "run_deps": {
+    "hackathon-plugin": {
+      "local": "yes",
+      "name": "ck-quantum",
+      "skip_pruning_by_other_deps": "yes",
+      "sort": 10,
+      "tags": "tool,ck-quantum,hackathon"
+    },
     "lib-pyquil": {
       "local": "yes", 
       "name": "Rigetti pyQuil", 
@@ -32,12 +39,12 @@
       "sort": 20, 
       "tags": "lib,pyquil,quantum"
     },
-    "ck-quantum": {
+    "lib-python-scipy": {
       "local": "yes",
-      "name": "ck-quantum",
+      "name": "SciPy Python library",
       "skip_pruning_by_other_deps": "yes",
-      "sort": 10,
-      "tags": "tool,python-package,ck-quantum,hackathon"
+      "sort": 30,
+      "tags": "lib,scipy,python-package"
     }
   }, 
   "run_vars": {
