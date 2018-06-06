@@ -9,7 +9,6 @@ import json
 import time
 
 import numpy as np
-from scipy.optimize import minimize
 
 import pyquil.api as api
 from pyquil.quil import Program
@@ -29,7 +28,7 @@ class NumpyEncoder(json.JSONEncoder):
             return bool(obj)
         return json.JSONEncoder.default(self, obj)
 
-def daochens_vqe(qvm, ansatz, hamiltonian, start_params, minimizer_method, minimizer_options, sample_number):
+def daochens_vqe(qvm, ansatz, hamiltonian, start_params, minimizer_function, minimizer_options, sample_number):
 
     def expectation_estimation(ab, report):
         """
@@ -95,7 +94,7 @@ def daochens_vqe(qvm, ansatz, hamiltonian, start_params, minimizer_method, minim
 
     # we fix the maximum number of function evaluations to allow for benchmarking
     timestamp_before_optimizer = time.time()
-    optimizer_output = minimize(expectation_estimation, start_params, args=(report), method = minimizer_method, options = minimizer_options)
+    optimizer_output = minimizer_function(expectation_estimation, start_params, my_args=(report), my_options = minimizer_options)
     timestamp_after_optimizer = time.time()
 
     total_optimization_seconds = timestamp_after_optimizer - timestamp_before_optimizer
@@ -145,10 +144,6 @@ if __name__ == '__main__':
     max_function_evaluations    = int( sys.argv[2] )
     sample_number               = int( sys.argv[3] )
 
-    print(hackathon.hello())
-    lines = inspect.getsource( hackathon.hello )
-    print( lines )
-
     print("Using minimizer_method='"+minimizer_method+"'")
     print("Using max_function_evaluations="+str(max_function_evaluations))
     print("Using sample_number="+str(sample_number))
@@ -175,14 +170,19 @@ if __name__ == '__main__':
     qvm = api.QVMConnection()
 
     minimizer_options =  {
-        'Nelder-Mead':  {'maxfev':  max_function_evaluations},
-        'COBYLA':       {'maxiter': max_function_evaluations}
+        'my_nelder_mead':   {'maxfev':  max_function_evaluations},
+        'my_cobyla':        {'maxiter': max_function_evaluations},
+        'my_minimizer':     {}
             }[minimizer_method]
 
-    (vqe_output, report) = daochens_vqe(qvm, ansatz, hamiltonian, start_params, minimizer_method, minimizer_options, sample_number)
+    minimizer_function = getattr(hackathon, minimizer_method)   # minimizer_method is a string/name, minimizer_function is an imported callable
+
+    (vqe_output, report) = daochens_vqe(qvm, ansatz, hamiltonian, start_params, minimizer_function, minimizer_options, sample_number)
+
+    minimizer_src   = inspect.getsource( minimizer_function )
 
     vqe_input       = { "minimizer_method" : minimizer_method, "minimizer_options": minimizer_options, "sample_number" : sample_number }
-    output_dict     = { "vqe_input" : vqe_input, "vqe_output" : vqe_output, "report" : report }
+    output_dict     = { "vqe_input" : vqe_input, "vqe_output" : vqe_output, "report" : report, "minimizer_src" : minimizer_src }
     formatted_json  = json.dumps(output_dict, cls=NumpyEncoder, sort_keys = True, indent = 4)
 
 #    print(formatted_json)

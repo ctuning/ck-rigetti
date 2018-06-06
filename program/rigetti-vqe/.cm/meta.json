@@ -38,18 +38,11 @@
       "skip_pruning_by_other_deps": "yes", 
       "sort": 20, 
       "tags": "lib,pyquil,quantum"
-    },
-    "lib-python-scipy": {
-      "local": "yes",
-      "name": "SciPy Python library",
-      "skip_pruning_by_other_deps": "yes",
-      "sort": 30,
-      "tags": "lib,scipy,python-package"
     }
   }, 
   "run_vars": {
     "VQE_MAX_ITERATIONS": 80, 
-    "VQE_MINIMIZER_METHOD": "Nelder-Mead", 
+    "VQE_MINIMIZER_METHOD": "my_nelder_mead",
     "VQE_SAMPLE_SIZE": 1000
   }, 
   "tags": [
