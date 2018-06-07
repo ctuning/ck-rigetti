@@ -10,7 +10,7 @@ import time
 
 import numpy as np
 
-import pyquil.api as api
+import pyquil.api
 from pyquil.quil import Program
 from pyquil.paulis import PauliTerm
 from pyquil.gates import *
@@ -28,7 +28,7 @@ class NumpyEncoder(json.JSONEncoder):
             return bool(obj)
         return json.JSONEncoder.default(self, obj)
 
-def daochens_vqe(qvm, ansatz, hamiltonian, start_params, minimizer_function, minimizer_options, sample_number):
+def daochens_vqe(q_device, ansatz, hamiltonian, start_params, minimizer_function, minimizer_options, sample_number):
 
     def expectation_estimation(ab, report):
         """
@@ -71,7 +71,7 @@ def daochens_vqe(qvm, ansatz, hamiltonian, start_params, minimizer_function, min
                         
                     # our own short program to get the expectation.
                     timestamp_before_qvm = time.time()
-                    result = qvm.run(meas_prog, qubits_to_measure, sample_number)
+                    result = q_device.run(meas_prog, qubits_to_measure, sample_number)
                     q_run_seconds = time.time() - timestamp_before_qvm
                     q_run_shots   = sample_number
 
@@ -144,14 +144,16 @@ def helium_tiny_ansatz(ab):
     return p
 
 if __name__ == '__main__':
-    if len(sys.argv)!=4:
-        print("Usage: "+sys.argv[0]+" <minimizer_method> <max_function_evaluations> <sample_number>")
+    if len(sys.argv)!=5:
+        print("Usage: "+sys.argv[0]+" <q_device_name> <minimizer_method> <max_function_evaluations> <sample_number>")
         exit(1)
 
-    minimizer_method            = sys.argv[1]
-    max_function_evaluations    = int( sys.argv[2] )
-    sample_number               = int( sys.argv[3] )
+    q_device_name               = sys.argv[1]       # '8Q-Agave', '19Q-Acorn', etc . Empty string means run on QVM simulator.
+    minimizer_method            = sys.argv[2]
+    max_function_evaluations    = int( sys.argv[3] )
+    sample_number               = int( sys.argv[4] )
 
+    print("Trying q_device_name='"+q_device_name+"'")
     print("Using minimizer_method='"+minimizer_method+"'")
     print("Using max_function_evaluations="+str(max_function_evaluations))
     print("Using sample_number="+str(sample_number))
@@ -175,21 +177,31 @@ if __name__ == '__main__':
     ansatz = helium_tiny_ansatz
     start_params = [1, 1]
 
-    qvm = api.QVMConnection()
+    if q_device_name:
+        q_device        = pyquil.api.QPUConnection( q_device_name )
+    else:
+        q_device        = pyquil.api.QVMConnection()
+        q_device_name   = 'rigetti-simulator'           # only setting it for printable output
 
-    minimizer_options =  {
+    minimizer_options = {
         'my_nelder_mead':   {'maxfev':  max_function_evaluations},
         'my_cobyla':        {'maxiter': max_function_evaluations},
         'my_minimizer':     {}
-            }[minimizer_method]
+        }[minimizer_method]
+
+    vqe_input = {
+        "q_device_name"     : q_device_name,
+        "minimizer_method"  : minimizer_method,
+        "minimizer_options" : minimizer_options,
+        "sample_number"     : sample_number
+        }
 
     minimizer_function = getattr(hackathon, minimizer_method)   # minimizer_method is a string/name, minimizer_function is an imported callable
 
-    (vqe_output, report) = daochens_vqe(qvm, ansatz, hamiltonian, start_params, minimizer_function, minimizer_options, sample_number)
+    (vqe_output, report) = daochens_vqe(q_device, ansatz, hamiltonian, start_params, minimizer_function, minimizer_options, sample_number)
 
     minimizer_src   = inspect.getsource( minimizer_function )
 
-    vqe_input       = { "minimizer_method" : minimizer_method, "minimizer_options": minimizer_options, "sample_number" : sample_number }
     output_dict     = { "vqe_input" : vqe_input, "vqe_output" : vqe_output, "report" : report, "minimizer_src" : minimizer_src }
     formatted_json  = json.dumps(output_dict, cls=NumpyEncoder, sort_keys = True, indent = 4)
 
