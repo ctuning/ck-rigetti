@@ -41,7 +41,13 @@ def daochens_vqe(qvm, ansatz, hamiltonian, start_params, minimizer_function, min
         state_program = ansatz(ab)
         expectation = 0.0   
 
-        report_this_iteration = { 'total_q_seconds_per_c_iteration' : 0.0, 'seconds_per_individual_q_run' : [] }
+        report_this_iteration = {
+            'total_q_seconds_per_c_iteration' : 0.0,
+            'seconds_per_individual_q_run' : [],
+            'total_q_shots_per_c_iteration' : 0,
+            'shots_per_individual_q_run' : []
+            }
+
         for j, term in enumerate(hamiltonian.terms):
             meas_basis_change = Program()
             qubits_to_measure = []
@@ -66,13 +72,15 @@ def daochens_vqe(qvm, ansatz, hamiltonian, start_params, minimizer_function, min
                     # our own short program to get the expectation.
                     timestamp_before_qvm = time.time()
                     result = qvm.run(meas_prog, qubits_to_measure, sample_number)
-                    timestamp_after_qvm = time.time()
+                    q_run_seconds = time.time() - timestamp_before_qvm
+                    q_run_shots   = sample_number
 
-                    q_run_seconds = timestamp_after_qvm - timestamp_before_qvm
                     meas_outcome = np.sum([np.power(-1, np.sum(x)) for x in result])/sample_number
 
                     report_this_iteration['total_q_seconds_per_c_iteration'] += q_run_seconds # total_q_time_per_iteration
                     report_this_iteration['seconds_per_individual_q_run'].append( q_run_seconds ) # q_time_per_iteration
+                    report_this_iteration['total_q_shots_per_c_iteration'] += q_run_shots
+                    report_this_iteration['shots_per_individual_q_run'].append( q_run_shots )
 
             expectation += term.coefficient * meas_outcome
 
@@ -81,16 +89,15 @@ def daochens_vqe(qvm, ansatz, hamiltonian, start_params, minimizer_function, min
 
         report['iterations'].append( report_this_iteration )
         report['total_q_seconds'] += report_this_iteration['total_q_seconds_per_c_iteration']  # total_q_time += total
+        report['total_q_shots'] += report_this_iteration['total_q_shots_per_c_iteration']
 
-        timestamp_after_ee = time.time()
-
-        report_this_iteration['total_seconds_per_c_iteration'] = timestamp_after_ee - timestamp_before_ee
+        report_this_iteration['total_seconds_per_c_iteration'] = time.time() - timestamp_before_ee
 
         print(report_this_iteration, "\n")
 
         return energy
 
-    report = { 'total_q_seconds': 0, 'iterations' : [] }
+    report = { 'total_q_seconds': 0, 'total_q_shots':0, 'iterations' : [] }
 
     # we fix the maximum number of function evaluations to allow for benchmarking
     timestamp_before_optimizer = time.time()
@@ -102,6 +109,7 @@ def daochens_vqe(qvm, ansatz, hamiltonian, start_params, minimizer_function, min
     report['total_seconds'] = total_optimization_seconds
 
     print('Total Q seconds = %f' % report['total_q_seconds'])
+    print('Total Q shots = %f' % report['total_q_shots'])
     print('Total seconds = %f' % report['total_seconds'])
 
     return (optimizer_output, report)
