@@ -16,7 +16,7 @@ from pyquil.paulis import PauliTerm
 from pyquil.gates import *
 
 import inspect
-import hackathon
+from hackathon import optimizers as optimizers
 
 # See https://stackoverflow.com/questions/26646362/numpy-array-is-not-json-serializable
 #
@@ -109,7 +109,7 @@ def daochens_vqe(q_device, ansatz, hamiltonian, start_params, minimizer_function
     report['total_seconds'] = total_optimization_seconds
 
     print('Total Q seconds = %f' % report['total_q_seconds'])
-    print('Total Q shots = %f' % report['total_q_shots'])
+    print('Total Q shots = %d' % report['total_q_shots'])
     print('Total seconds = %f' % report['total_seconds'])
 
     return (optimizer_output, report)
@@ -196,7 +196,7 @@ if __name__ == '__main__':
         "sample_number"     : sample_number
         }
 
-    minimizer_function = getattr(hackathon, minimizer_method)   # minimizer_method is a string/name, minimizer_function is an imported callable
+    minimizer_function = getattr(optimizers, minimizer_method)   # minimizer_method is a string/name, minimizer_function is an imported callable
 
     (vqe_output, report) = daochens_vqe(q_device, ansatz, hamiltonian, start_params, minimizer_function, minimizer_options, sample_number)
 
