@@ -4,9 +4,9 @@
 This module runs DaoChen's version Variational-Quantum-Eigensolver on Helium
 """
 
-import sys
 import json
 import time
+import argparse
 
 import numpy as np
 
@@ -151,18 +151,21 @@ def helium_tiny_ansatz(ab):
     return p
 
 if __name__ == '__main__':
-    if len(sys.argv)!=5:
-        print("Usage: "+sys.argv[0]+" <q_device_name> <minimizer_method> <max_function_evaluations> <sample_number>")
-        exit(1)
+    arg_parser = argparse.ArgumentParser()
+    arg_parser.add_argument("q_device_name", help="Real devices: '8Q-Agave' or '19Q-Acorn'. Either 'QVM' or '' for remote simulator")
+    arg_parser.add_argument("minimizer_method", help="SciPy-based: 'my_nelder_mead', 'my_cobyla' or the custom 'my_minimizer'")
+    arg_parser.add_argument("max_func_evaluations", type=int, help="Minimizer's upper limit on the number of function evaluations")
+    arg_parser.add_argument("sample_number", type=int, help="Number of repetitions of each individual quantum run")
+    args = arg_parser.parse_args()
 
-    q_device_name               = sys.argv[1]       # '8Q-Agave', '19Q-Acorn', etc . Empty string means run on QVM simulator.
-    minimizer_method            = sys.argv[2]
-    max_function_evaluations    = int( sys.argv[3] )
-    sample_number               = int( sys.argv[4] )
+    q_device_name           = args.q_device_name
+    minimizer_method        = args.minimizer_method
+    max_func_evaluations    = args.max_func_evaluations
+    sample_number           = args.sample_number
 
     print("Trying q_device_name='"+q_device_name+"'")
     print("Using minimizer_method='"+minimizer_method+"'")
-    print("Using max_function_evaluations="+str(max_function_evaluations))
+    print("Using max_func_evaluations="+str(max_func_evaluations))
     print("Using sample_number="+str(sample_number))
 
     # input molecule and basis set (this is the only user input necessary to perform VQE
@@ -191,8 +194,8 @@ if __name__ == '__main__':
         q_device        = pyquil.api.QPUConnection( q_device_name )
 
     minimizer_options = {
-        'my_nelder_mead':   {'maxfev':  max_function_evaluations},
-        'my_cobyla':        {'maxiter': max_function_evaluations},
+        'my_nelder_mead':   {'maxfev':  max_func_evaluations},
+        'my_cobyla':        {'maxiter': max_func_evaluations},
         'my_minimizer':     {}
         }[minimizer_method]
 
