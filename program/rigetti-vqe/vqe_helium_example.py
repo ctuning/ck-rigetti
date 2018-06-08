@@ -72,15 +72,15 @@ def daochens_vqe(q_device, ansatz, hamiltonian, start_params, minimizer_function
                     # Because Rigetti sometimes drops the connection after a few successful runs,
                     # we try to recover from unsuccessful runs and carry on
                     #
-                    for attempt in range(8):
+                    for attempt in range(1,8):
                         try:
                             timestamp_before_qvm = time.time()
                             result = q_device.run(meas_prog, qubits_to_measure, sample_number)
                             q_run_seconds = time.time() - timestamp_before_qvm
                             q_run_shots   = sample_number
                             break
-                        except pyquil.api.errors.UnknownApiError:
-                            print("Endpoint request timed out, attempt number %d" % attempt)
+                        except Exception as e:
+                            print("Caught exception (%s), attempt number %d" % (str(e), attempt))
 
                     meas_outcome = np.sum([np.power(-1, np.sum(x)) for x in result])/sample_number
 
