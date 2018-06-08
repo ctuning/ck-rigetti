@@ -156,17 +156,20 @@ if __name__ == '__main__':
     arg_parser.add_argument("minimizer_method", help="SciPy-based: 'my_nelder_mead', 'my_cobyla' or the custom 'my_minimizer'")
     arg_parser.add_argument("max_func_evaluations", type=int, help="Minimizer's upper limit on the number of function evaluations")
     arg_parser.add_argument("sample_number", type=int, help="Number of repetitions of each individual quantum run")
+    arg_parser.add_argument("--start_params", "--start-params", type=int, nargs=2, default=[1,1], help="Initial values of optimized parameters")
     args = arg_parser.parse_args()
 
     q_device_name           = args.q_device_name
     minimizer_method        = args.minimizer_method
     max_func_evaluations    = args.max_func_evaluations
     sample_number           = args.sample_number
+    start_params            = args.start_params
 
     print("Trying q_device_name='"+q_device_name+"'")
     print("Using minimizer_method='"+minimizer_method+"'")
     print("Using max_func_evaluations="+str(max_func_evaluations))
     print("Using sample_number="+str(sample_number))
+    print("Using start_params="+str(start_params))
 
     # input molecule and basis set (this is the only user input necessary to perform VQE
     # on the Rigetti quantum computer with a UCC ansatz)
@@ -185,7 +188,6 @@ if __name__ == '__main__':
         0.263928235683768058*PauliTerm.from_list([("Z", 0), ("Z", 1)]) + \
         0.7019459893849936*PauliTerm('Z',1)
     ansatz = helium_tiny_ansatz
-    start_params = [1, 1]
 
     if not q_device_name or q_device_name == 'QVM':
         q_device        = pyquil.api.QVMConnection()
