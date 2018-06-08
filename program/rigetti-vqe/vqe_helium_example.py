@@ -152,11 +152,14 @@ def helium_tiny_ansatz(ab):
 
 if __name__ == '__main__':
     arg_parser = argparse.ArgumentParser()
-    arg_parser.add_argument("q_device_name", help="Real devices: '8Q-Agave' or '19Q-Acorn'. Either 'QVM' or '' for remote simulator")
+    arg_parser.add_argument("--q_device_name", "--q-device-name",
+                            default='QVM', help="Real devices: '8Q-Agave' or '19Q-Acorn'. Either 'QVM' or '' for remote simulator")
+    arg_parser.add_argument("--start_params", "--start-params",
+                            type=int, nargs=2, default=[0, 0], help="Initial values of optimized parameters")
+
     arg_parser.add_argument("minimizer_method", help="SciPy-based: 'my_nelder_mead', 'my_cobyla' or the custom 'my_minimizer'")
     arg_parser.add_argument("max_func_evaluations", type=int, help="Minimizer's upper limit on the number of function evaluations")
     arg_parser.add_argument("sample_number", type=int, help="Number of repetitions of each individual quantum run")
-    arg_parser.add_argument("--start_params", "--start-params", type=int, nargs=2, default=[1,1], help="Initial values of optimized parameters")
     args = arg_parser.parse_args()
 
     q_device_name           = args.q_device_name
@@ -189,9 +192,8 @@ if __name__ == '__main__':
         0.7019459893849936*PauliTerm('Z',1)
     ansatz = helium_tiny_ansatz
 
-    if not q_device_name or q_device_name == 'QVM':
+    if q_device_name == 'QVM':
         q_device        = pyquil.api.QVMConnection()
-        q_device_name   = 'QVM'                         # only setting it for printable output
     else:
         q_device        = pyquil.api.QPUConnection( q_device_name )
 
