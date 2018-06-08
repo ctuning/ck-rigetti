@@ -177,11 +177,11 @@ if __name__ == '__main__':
     ansatz = helium_tiny_ansatz
     start_params = [1, 1]
 
-    if q_device_name:
-        q_device        = pyquil.api.QPUConnection( q_device_name )
-    else:
+    if not q_device_name or q_device_name == 'QVM':
         q_device        = pyquil.api.QVMConnection()
-        q_device_name   = 'rigetti-simulator'           # only setting it for printable output
+        q_device_name   = 'QVM'                         # only setting it for printable output
+    else:
+        q_device        = pyquil.api.QPUConnection( q_device_name )
 
     minimizer_options = {
         'my_nelder_mead':   {'maxfev':  max_function_evaluations},

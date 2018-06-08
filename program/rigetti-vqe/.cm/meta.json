@@ -15,7 +15,7 @@
       "run_time": {
         "fine_grain_timer_file": "vqe_report.json", 
         "output_invariant_of_repeat": "no", 
-        "run_cmd_main": "$<<CK_ENV_COMPILER_PYTHON_FILE>>$ ../vqe_helium_example.py \"$<<RIGETTI_QUANTUM_DEVICE>>$\" $<<VQE_MINIMIZER_METHOD>>$ $<<VQE_MAX_ITERATIONS>>$ $<<VQE_SAMPLE_SIZE>>$",
+        "run_cmd_main": "$<<CK_ENV_COMPILER_PYTHON_FILE>>$ ../vqe_helium_example.py $<<RIGETTI_QUANTUM_DEVICE>>$ $<<VQE_MINIMIZER_METHOD>>$ $<<VQE_MAX_ITERATIONS>>$ $<<VQE_SAMPLE_SIZE>>$",
         "run_cmd_out1": "tmp-stdout.tmp", 
         "run_cmd_out2": "tmp-stderr.tmp", 
         "run_output_files": [
@@ -41,7 +41,7 @@
     }
   }, 
   "run_vars": {
-    "RIGETTI_QUANTUM_DEVICE": "",
+    "RIGETTI_QUANTUM_DEVICE": "QVM",
     "VQE_MINIMIZER_METHOD": "my_nelder_mead",
     "VQE_MAX_ITERATIONS": 80,
     "VQE_SAMPLE_SIZE": 1000
