@@ -2,6 +2,9 @@
 
 """
 This module runs DaoChen's version Variational-Quantum-Eigensolver on Helium
+
+Example running it partially using CK infrastructure:
+    time ck virtual `ck search env:* --tags=pyquil` `ck search env:* --tags=login,rigetti` `ck search env:* --tags=hackathon`  --shell_cmd='vqe_helium_example.py --minimizer_method=my_cobyla --minimizer_options='{\"alpha\":34}'"
 """
 
 import json
@@ -27,6 +30,7 @@ class NumpyEncoder(json.JSONEncoder):
         elif isinstance(obj, np.bool_):
             return bool(obj)
         return json.JSONEncoder.default(self, obj)
+
 
 def daochens_vqe(q_device, ansatz, hamiltonian, start_params, minimizer_function, minimizer_options, sample_number):
 
@@ -150,29 +154,69 @@ def helium_tiny_ansatz(ab):
 
     return p
 
-if __name__ == '__main__':
-    arg_parser = argparse.ArgumentParser()
-    arg_parser.add_argument("--q_device_name", "--q-device-name",
-                            default='QVM', help="Real devices: '8Q-Agave' or '19Q-Acorn'. Either 'QVM' or '' for remote simulator")
-    arg_parser.add_argument("--start_params", "--start-params",
-                            type=int, nargs=2, default=[0, 0], help="Initial values of optimized parameters")
 
-    arg_parser.add_argument("minimizer_method", help="SciPy-based: 'my_nelder_mead', 'my_cobyla' or the custom 'my_minimizer'")
-    arg_parser.add_argument("max_func_evaluations", type=int, help="Minimizer's upper limit on the number of function evaluations")
-    arg_parser.add_argument("sample_number", type=int, help="Number of repetitions of each individual quantum run")
+def cmdline_parse_and_report():
+    arg_parser = argparse.ArgumentParser()
+
+    arg_parser.add_argument('--start_params', '--start-params',
+                            default=[0, 0], type=int, nargs=2, help="Initial values of optimized parameters")
+
+    arg_parser.add_argument('--sample_number', '--sample-number', '--shots',
+                            default=100, type=int, help="Number of repetitions of each individual quantum run")
+
+    arg_parser.add_argument('--q_device_name', '--q-device-name',
+                            default='QVM', help="Real devices: '8Q-Agave' or '19Q-Acorn'. Either 'QVM' or '' for remote simulator")
+
+    arg_parser.add_argument('--minimizer_method', '--minimizer-method',
+                            default='my_cobyla', help="SciPy-based: 'my_nelder_mead', 'my_cobyla' or the custom 'my_minimizer'")
+
+    arg_parser.add_argument('--max_func_evaluations', '--max-func-evaluations',
+                            default=100, type=int, help="Minimizer's upper limit on the number of function evaluations")
+
+    arg_parser.add_argument('--minimizer_options', '--minimizer-options',
+                            default='{}', help="A dictionary in JSON format to be passed to the minimizer function")
+
     args = arg_parser.parse_args()
 
+    start_params            = args.start_params
+    sample_number           = args.sample_number
     q_device_name           = args.q_device_name
     minimizer_method        = args.minimizer_method
     max_func_evaluations    = args.max_func_evaluations
-    sample_number           = args.sample_number
-    start_params            = args.start_params
+    minimizer_options       = json.loads( args.minimizer_options )
 
-    print("Trying q_device_name='"+q_device_name+"'")
-    print("Using minimizer_method='"+minimizer_method+"'")
-    print("Using max_func_evaluations="+str(max_func_evaluations))
-    print("Using sample_number="+str(sample_number))
-    print("Using start_params="+str(start_params))
+    # We only know how to limit the number of iterations for certain methods,
+    # so will introduce this as a "patch" to their minimizer_options dictionary:
+    #
+    if max_func_evaluations:
+        minimizer_options_update = {
+            'my_nelder_mead':   {'maxfev':  max_func_evaluations},
+            'my_cobyla':        {'maxiter': max_func_evaluations},
+            }.get(minimizer_method, {})
+
+        minimizer_options.update( minimizer_options_update )
+
+    print("Using start_params = '%s'"           % str(start_params) )
+    print("Using shots (sample_number) = %d"    % sample_number)
+    print("Using q_device_name = '%s'"          % q_device_name)
+    print("Using minimizer_method = '%s'"       % minimizer_method)
+    print("Using max_func_evaluations = %d"     % max_func_evaluations)         # this parameter may influence the next one
+    print("Using minimizer_options = '%s'"      % str(minimizer_options) )
+
+    minimizer_function = getattr(optimizers, minimizer_method)   # minimizer_method is a string/name, minimizer_function is an imported callable
+
+    return start_params, sample_number, q_device_name, minimizer_method, minimizer_options, minimizer_function
+
+
+if __name__ == '__main__':
+    start_params, sample_number, q_device_name, minimizer_method, minimizer_options, minimizer_function = cmdline_parse_and_report()
+
+    # ---------------------------------------- pyquil-specific init: ----------------------------------------
+
+    if q_device_name == 'QVM':
+        q_device    = pyquil.api.QVMConnection()
+    else:
+        q_device    = pyquil.api.QPUConnection( q_device_name )
 
     # input molecule and basis set (this is the only user input necessary to perform VQE
     # on the Rigetti quantum computer with a UCC ansatz)
@@ -190,18 +234,12 @@ if __name__ == '__main__':
         0.7019459893849936*PauliTerm('Z',0) + \
         0.263928235683768058*PauliTerm.from_list([("Z", 0), ("Z", 1)]) + \
         0.7019459893849936*PauliTerm('Z',1)
-    ansatz = helium_tiny_ansatz
 
-    if q_device_name == 'QVM':
-        q_device        = pyquil.api.QVMConnection()
-    else:
-        q_device        = pyquil.api.QPUConnection( q_device_name )
+    # ---------------------------------------- run VQE: ----------------------------------------
 
-    minimizer_options = {
-        'my_nelder_mead':   {'maxfev':  max_func_evaluations},
-        'my_cobyla':        {'maxiter': max_func_evaluations},
-        'my_minimizer':     {}
-        }[minimizer_method]
+    (vqe_output, report) = daochens_vqe(q_device, helium_tiny_ansatz, hamiltonian, start_params, minimizer_function, minimizer_options, sample_number)
+
+    # ---------------------------------------- store the results: ----------------------------------------
 
     vqe_input = {
         "q_device_name"     : q_device_name,
@@ -209,10 +247,6 @@ if __name__ == '__main__':
         "minimizer_options" : minimizer_options,
         "sample_number"     : sample_number
         }
-
-    minimizer_function = getattr(optimizers, minimizer_method)   # minimizer_method is a string/name, minimizer_function is an imported callable
-
-    (vqe_output, report) = daochens_vqe(q_device, ansatz, hamiltonian, start_params, minimizer_function, minimizer_options, sample_number)
 
     minimizer_src   = inspect.getsource( minimizer_function )
 

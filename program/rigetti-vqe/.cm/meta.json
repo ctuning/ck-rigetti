@@ -15,7 +15,7 @@
       "run_time": {
         "fine_grain_timer_file": "vqe_report.json", 
         "output_invariant_of_repeat": "no", 
-        "run_cmd_main": "$<<CK_ENV_COMPILER_PYTHON_FILE>>$ ../vqe_helium_example.py --q-device-name $<<RIGETTI_QUANTUM_DEVICE>>$ --start-params $<<VQE_START_PARAMS>>$ $<<VQE_MINIMIZER_METHOD>>$ $<<VQE_MAX_ITERATIONS>>$ $<<VQE_SAMPLE_SIZE>>$",
+        "run_cmd_main": "$<<CK_ENV_COMPILER_PYTHON_FILE>>$ ../vqe_helium_example.py --start-params $<<VQE_START_PARAMS>>$ --sample_number $<<VQE_SAMPLE_SIZE>>$ --q-device-name $<<RIGETTI_QUANTUM_DEVICE>>$ --minimizer_method $<<VQE_MINIMIZER_METHOD>>$ --max_func_evaluations $<<VQE_MAX_ITERATIONS>>$",
         "run_cmd_out1": "tmp-stdout.tmp", 
         "run_cmd_out2": "tmp-stderr.tmp", 
         "run_output_files": [
@@ -41,11 +41,11 @@
     }
   }, 
   "run_vars": {
-    "RIGETTI_QUANTUM_DEVICE": "QVM",
-    "VQE_START_PARAMS": "1 1",
-    "VQE_MINIMIZER_METHOD": "my_nelder_mead",
-    "VQE_MAX_ITERATIONS": 80,
-    "VQE_SAMPLE_SIZE": 1000
+    "VQE_START_PARAMS"          : "1 1",
+    "VQE_SAMPLE_SIZE"           : 1000,
+    "RIGETTI_QUANTUM_DEVICE"    : "QVM",
+    "VQE_MINIMIZER_METHOD"      : "my_nelder_mead",
+    "VQE_MAX_ITERATIONS"        : 80
   }, 
   "tags": [
     "pyquil", 
