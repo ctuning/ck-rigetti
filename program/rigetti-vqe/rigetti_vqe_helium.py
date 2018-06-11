@@ -192,16 +192,17 @@ if __name__ == '__main__':
 
     # ---------------------------------------- store the results: ----------------------------------------
 
+    minimizer_src   = inspect.getsource( minimizer_function )
+
     vqe_input = {
         "q_device_name"     : q_device_name,
         "minimizer_method"  : minimizer_method,
         "minimizer_options" : minimizer_options,
-        "sample_number"     : sample_number
+        "sample_number"     : sample_number,
+        "minimizer_src"     : minimizer_src
         }
 
-    minimizer_src   = inspect.getsource( minimizer_function )
-
-    output_dict     = { "vqe_input" : vqe_input, "vqe_output" : vqe_output, "report" : report, "minimizer_src" : minimizer_src }
+    output_dict     = { "vqe_input" : vqe_input, "vqe_output" : vqe_output, "report" : report }
     formatted_json  = json.dumps(output_dict, cls=NumpyEncoder, sort_keys = True, indent = 4)
 
 #    print(formatted_json)
