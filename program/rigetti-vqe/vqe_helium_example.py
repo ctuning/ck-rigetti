@@ -9,7 +9,6 @@ Example running it partially using CK infrastructure:
 
 import json
 import time
-import argparse
 
 import numpy as np
 
@@ -155,26 +154,31 @@ def helium_tiny_ansatz(ab):
     return p
 
 
-def cmdline_parse_and_report():
+def cmdline_parse_and_report(num_params, q_device_name_default, q_device_name_help, minimizer_options_default='{}'):
+
+    import argparse
+
+    start_params_default = np.random.randn( num_params )  # Initial guess of ansatz
+
     arg_parser = argparse.ArgumentParser()
 
     arg_parser.add_argument('--start_params', '--start-params',
-                            default=[0, 0], type=int, nargs=2, help="Initial values of optimized parameters")
+                            default=start_params_default, type=float, nargs=num_params, help="Initial values of optimized parameters")
 
     arg_parser.add_argument('--sample_number', '--sample-number', '--shots',
                             default=100, type=int, help="Number of repetitions of each individual quantum run")
 
     arg_parser.add_argument('--q_device_name', '--q-device-name',
-                            default='QVM', help="Real devices: '8Q-Agave' or '19Q-Acorn'. Either 'QVM' or '' for remote simulator")
+                            default=q_device_name_default, help=q_device_name_help)
 
     arg_parser.add_argument('--minimizer_method', '--minimizer-method',
-                            default='my_cobyla', help="SciPy-based: 'my_nelder_mead', 'my_cobyla' or the custom 'my_minimizer'")
+                            default='my_nelder_mead', help="SciPy-based: 'my_nelder_mead', 'my_cobyla' or the custom 'my_minimizer'")
 
     arg_parser.add_argument('--max_func_evaluations', '--max-func-evaluations',
                             default=100, type=int, help="Minimizer's upper limit on the number of function evaluations")
 
     arg_parser.add_argument('--minimizer_options', '--minimizer-options',
-                            default='{}', help="A dictionary in JSON format to be passed to the minimizer function")
+                            default=minimizer_options_default, help="A dictionary in JSON format to be passed to the minimizer function")
 
     args = arg_parser.parse_args()
 
@@ -209,7 +213,12 @@ def cmdline_parse_and_report():
 
 
 if __name__ == '__main__':
-    start_params, sample_number, q_device_name, minimizer_method, minimizer_options, minimizer_function = cmdline_parse_and_report()
+    start_params, sample_number, q_device_name, minimizer_method, minimizer_options, minimizer_function = cmdline_parse_and_report(
+        num_params                  = 2,
+        q_device_name_default       = 'QVM',
+        q_device_name_help          = "Real devices: '8Q-Agave' or '19Q-Acorn'. Either 'QVM' or '' for remote simulator",
+        minimizer_options_default   = '{}'
+        )
 
     # ---------------------------------------- pyquil-specific init: ----------------------------------------
 
