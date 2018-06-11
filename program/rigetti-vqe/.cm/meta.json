@@ -13,13 +13,13 @@
     "rigetti-vqe-helium": {
       "ignore_return_code": "no", 
       "run_time": {
-        "fine_grain_timer_file": "vqe_report.json", 
+        "fine_grain_timer_file": "rigetti_vqe_report.json",
         "output_invariant_of_repeat": "no", 
         "run_cmd_main": "$<<CK_ENV_COMPILER_PYTHON_FILE>>$ ../rigetti_vqe_helium.py --start-params $<<VQE_START_PARAMS>>$ --sample_number $<<VQE_SAMPLE_SIZE>>$ --q-device-name $<<RIGETTI_QUANTUM_DEVICE>>$ --minimizer_method $<<VQE_MINIMIZER_METHOD>>$ --max_func_evaluations $<<VQE_MAX_ITERATIONS>>$",
         "run_cmd_out1": "tmp-stdout.tmp", 
         "run_cmd_out2": "tmp-stderr.tmp", 
         "run_output_files": [
-          "vqe_report.json"
+          "rigetti_vqe_report.json"
         ]
       }
     }

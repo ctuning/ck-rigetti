@@ -9,6 +9,7 @@ Example running it partially using CK infrastructure:
 
 import json
 import time
+import inspect
 
 import numpy as np
 
@@ -17,8 +18,8 @@ from pyquil.quil import Program
 from pyquil.paulis import PauliTerm
 from pyquil.gates import *
 
-import inspect
 from hackathon.utils import cmdline_parse_and_report
+
 
 # See https://stackoverflow.com/questions/26646362/numpy-array-is-not-json-serializable
 #
@@ -112,11 +113,8 @@ def daochens_vqe(q_device, ansatz, hamiltonian, start_params, minimizer_function
     # we fix the maximum number of function evaluations to allow for benchmarking
     timestamp_before_optimizer = time.time()
     optimizer_output = minimizer_function(expectation_estimation, start_params, my_args=(report), my_options = minimizer_options)
-    timestamp_after_optimizer = time.time()
 
-    total_optimization_seconds = timestamp_after_optimizer - timestamp_before_optimizer
-
-    report['total_seconds'] = total_optimization_seconds
+    report['total_seconds'] = time.time() - timestamp_before_optimizer
 
     print('Total Q seconds = %f' % report['total_q_seconds'])
     print('Total Q shots = %d' % report['total_q_shots'])
@@ -207,6 +205,6 @@ if __name__ == '__main__':
 
 #    print(formatted_json)
 
-    with open('vqe_report.json', 'w') as json_file:
+    with open('rigetti_vqe_report.json', 'w') as json_file:
         json_file.write( formatted_json )
 
