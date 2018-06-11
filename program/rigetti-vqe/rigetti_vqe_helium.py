@@ -4,7 +4,7 @@
 This module runs DaoChen's version Variational-Quantum-Eigensolver on Helium
 
 Example running it partially using CK infrastructure:
-    time ck virtual `ck search env:* --tags=pyquil` `ck search env:* --tags=login,rigetti` `ck search env:* --tags=hackathon`  --shell_cmd='vqe_helium_example.py --minimizer_method=my_cobyla --minimizer_options='{\"alpha\":34}'"
+    time ck virtual `ck search env:* --tags=pyquil` `ck search env:* --tags=login,rigetti` `ck search env:* --tags=hackathon`  --shell_cmd='rigetti_vqe_helium.py --minimizer_method=my_cobyla --minimizer_options='{\"alpha\":34}'"
 """
 
 import json
