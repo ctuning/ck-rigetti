@@ -4,7 +4,8 @@
   "customize": {
     "install_env": {
         "PACKAGE_COMMIT" : "master"
-    }
+    },
+    "version" : "master"
   }, 
   "deps": {
     "forest login": {
@@ -35,6 +36,7 @@
     "lib", 
     "quantum", 
     "rigetti", 
-    "pyquil"
+    "pyquil",
+    "vmaster"
   ]
 }
