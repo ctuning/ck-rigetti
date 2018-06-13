@@ -98,9 +98,10 @@ def daochens_vqe(q_device, ansatz, hamiltonian, start_params, minimizer_function
         energy = expectation.real
         report_this_iteration['energy'] = energy
 
-        report['iterations'].append( report_this_iteration )
-        report['total_q_seconds'] += report_this_iteration['total_q_seconds_per_c_iteration']  # total_q_time += total
-        report['total_q_shots'] += report_this_iteration['total_q_shots_per_c_iteration']
+        if report != 'TestMode':
+            report['iterations'].append( report_this_iteration )
+            report['total_q_seconds'] += report_this_iteration['total_q_seconds_per_c_iteration']  # total_q_time += total
+            report['total_q_shots'] += report_this_iteration['total_q_shots_per_c_iteration']
 
         report_this_iteration['total_seconds_per_c_iteration'] = time.time() - timestamp_before_ee
 
@@ -108,13 +109,22 @@ def daochens_vqe(q_device, ansatz, hamiltonian, start_params, minimizer_function
 
         return energy
 
+
     report = { 'total_q_seconds': 0, 'total_q_shots':0, 'iterations' : [] }
 
-    # we fix the maximum number of function evaluations to allow for benchmarking
+    # Initial objective function value
+    fun_initial = expectation_estimation(start_params, 'TestMode')
+    print('Initial guess at start_params is: {:.4f}'.format(fun_initial))
+
     timestamp_before_optimizer = time.time()
     optimizer_output = minimizer_function(expectation_estimation, start_params, my_args=(report), my_options = minimizer_options)
-
     report['total_seconds'] = time.time() - timestamp_before_optimizer
+
+    # Also generate and provide a validated function value at the optimal point
+    fun_validated = expectation_estimation(optimizer_output['x'], 'TestMode')
+    print('Validated value at solution is: {:.4f}'.format(fun_validated))
+
+    optimizer_output['fun_validated'] = fun_validated
 
     print('Total Q seconds = %f' % report['total_q_seconds'])
     print('Total Q shots = %d' % report['total_q_shots'])
