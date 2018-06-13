@@ -184,6 +184,11 @@ if __name__ == '__main__':
         0.263928235683768058*PauliTerm.from_list([("Z", 0), ("Z", 1)]) + \
         0.7019459893849936*PauliTerm('Z',1)
 
+    # Need a way to transform the hamiltonian into numpy-friendly form
+    # to compute the energy classically:
+    #
+    #classical_energy = np.amin(la.eigh(hamiltonian)[0])
+
     # ---------------------------------------- run VQE: ----------------------------------------
 
     (vqe_output, report) = daochens_vqe(q_device, helium_tiny_ansatz, hamiltonian, start_params, minimizer_function, minimizer_options, sample_number)
