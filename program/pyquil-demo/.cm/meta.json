@@ -72,7 +72,7 @@
       "name": "Rigetti pyQuil",
       "skip_pruning_by_other_deps": "yes",
       "sort": 20,
-      "tags": "lib,pyquil,quantum"
+      "tags": "lib,pyquil,quantum,with-examples"
     }
   },
   "run_vars": {

@@ -37,6 +37,7 @@
     "quantum", 
     "rigetti", 
     "pyquil",
+    "with-examples",
     "vmaster"
   ]
 }
