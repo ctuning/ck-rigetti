@@ -126,8 +126,12 @@ def daochens_vqe(q_device, ansatz, hamiltonian, start_params, minimizer_function
     # Also generate and provide a validated function value at the optimal point
     fun_validated = expectation_estimation(optimizer_output['x'], 'TestMode')
     print('Validated value at solution is: {:.4f}'.format(fun_validated))
-
     optimizer_output['fun_validated'] = fun_validated
+
+    # Exact calculation of the energy using matrix multiplication:
+    progs, coefs    = hamiltonian.get_programs()
+    expect_coeffs   = np.array(qvm.expectation(ansatz(optimizer_output['x']), operator_programs=progs))
+    optimizer_output['fun_exact']=np.real_if_close(np.dot(coefs, expect_coeffs))
 
     print('Total Q seconds = %f' % report['total_q_seconds'])
     print('Total Q shots = %d' % report['total_q_shots'])
@@ -172,8 +176,9 @@ if __name__ == '__main__':
 
     # ---------------------------------------- pyquil-specific init: ----------------------------------------
 
+    qvm = pyquil.api.QVMConnection()
     if q_device_name == 'QVM':
-        q_device    = pyquil.api.QVMConnection()
+        q_device    = qvm
     else:
         q_device    = pyquil.api.QPUConnection( q_device_name )
 
