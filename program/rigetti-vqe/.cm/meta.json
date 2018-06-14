@@ -37,15 +37,22 @@
       "name": "Rigetti pyQuil", 
       "skip_pruning_by_other_deps": "yes", 
       "sort": 20, 
-      "tags": "lib,pyquil,quantum"
+      "tags": "lib,pyquil"
+    },
+    "lib-forestopenfermion": {
+      "local": "yes",
+      "name": "Rigetti ForestOpenFermion",
+      "skip_pruning_by_other_deps": "yes",
+      "sort": 30,
+      "tags": "lib,forestopenfermion"
     }
   }, 
   "run_vars": {
     "VQE_START_PARAMS"          : "1 1",
     "VQE_SAMPLE_SIZE"           : 1000,
     "RIGETTI_QUANTUM_DEVICE"    : "QVM",
-    "VQE_MINIMIZER_METHOD"      : "my_nelder_mead",
-    "VQE_MAX_ITERATIONS"        : 80
+    "VQE_MINIMIZER_METHOD"      : "my_random_sampler",
+    "VQE_MAX_ITERATIONS"        : 15
   }, 
   "tags": [
     "pyquil", 

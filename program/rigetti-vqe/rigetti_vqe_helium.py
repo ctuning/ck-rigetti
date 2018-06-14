@@ -4,7 +4,7 @@
 This module runs DaoChen's version Variational-Quantum-Eigensolver on Helium
 
 Example running it partially using CK infrastructure (assuming the current directory is $HOME/CK/ck-rigetti/program/rigetti-vqe) :
-    time ck virtual `ck search env:* --tags=pyquil` `ck search env:* --tags=login,rigetti` `ck search env:* --tags=hackathon`  --shell_cmd="./rigetti_vqe_helium.py --minimizer_method=my_cobyla --minimizer_options='{\"alpha\":34}'"
+    time ck virtual `ck search env:* --tags=forestopenfermion` `ck search env:* --tags=pyquil` `ck search env:* --tags=login,rigetti` `ck search env:* --tags=hackathon`  --shell_cmd="./rigetti_vqe_helium.py --minimizer_method=my_minimizer --max_func_evaluations=10"
 """
 
 import json
@@ -12,14 +12,14 @@ import time
 import inspect
 
 import numpy as np
-#from scipy import linalg as la
-#from forestopenfermion import pyquilpauli_to_qubitop
-#from openfermion.transforms import jordan_wigner, get_fermion_operator, get_sparse_operator
+from scipy import linalg as la
 
 import pyquil.api
 from pyquil.quil import Program
 from pyquil.paulis import PauliTerm
 from pyquil.gates import *
+from forestopenfermion import pyquilpauli_to_qubitop
+from openfermion.transforms import jordan_wigner, get_fermion_operator, get_sparse_operator
 
 from hackathon.utils import cmdline_parse_and_report
 
@@ -197,16 +197,16 @@ if __name__ == '__main__':
     # Transforming the Rigetti-style hamiltonian into numpy-friendly dense form
     # to compute the energy classically:
     #
-    #qubitOp                 = pyquilpauli_to_qubitop(hamiltonian)
-    #sparse_hamiltonian_jw   = get_sparse_operator(qubitOp)
-    #dense_hamiltonian_jw    = sparse_hamiltonian_jw.todense()
-    #classical_energy        = np.amin(la.eigh(dense_hamiltonian_jw)[0])
+    qubitOp                 = pyquilpauli_to_qubitop(hamiltonian)
+    sparse_hamiltonian_jw   = get_sparse_operator(qubitOp)
+    dense_hamiltonian_jw    = sparse_hamiltonian_jw.todense()
+    classical_energy        = np.amin(la.eigh(dense_hamiltonian_jw)[0])
 
     # Due to difficulty in reliably installing forestopenfermion + openfermion,
     # the code above is temporarily commented out.
     # The following result has been obtained using the code above:
     #
-    classical_energy        = -2.8077839575399746
+    #classical_energy        = -2.8077839575399746
 
     # ---------------------------------------- run VQE: ----------------------------------------
 
