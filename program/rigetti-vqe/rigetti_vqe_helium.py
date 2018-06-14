@@ -12,6 +12,9 @@ import time
 import inspect
 
 import numpy as np
+#from scipy import linalg as la
+#from forestopenfermion import pyquilpauli_to_qubitop
+#from openfermion.transforms import jordan_wigner, get_fermion_operator, get_sparse_operator
 
 import pyquil.api
 from pyquil.quil import Program
@@ -132,9 +135,6 @@ def daochens_vqe(q_device, ansatz, hamiltonian, start_params, minimizer_function
 
     return (optimizer_output, report)
 
-    # the "correct answer" is: -2.8551604772427424 a.u.
-    # this number now serves as an "application-based" benchmarking tool
-
 
 def helium_tiny_ansatz(ab):
     "in this trial, we also explicitly supply the UCC ansatz"
@@ -194,10 +194,19 @@ if __name__ == '__main__':
         0.263928235683768058*PauliTerm.from_list([("Z", 0), ("Z", 1)]) + \
         0.7019459893849936*PauliTerm('Z',1)
 
-    # Need a way to transform the hamiltonian into numpy-friendly form
+    # Transforming the Rigetti-style hamiltonian into numpy-friendly dense form
     # to compute the energy classically:
     #
-    #classical_energy = np.amin(la.eigh(hamiltonian)[0])
+    #qubitOp                 = pyquilpauli_to_qubitop(hamiltonian)
+    #sparse_hamiltonian_jw   = get_sparse_operator(qubitOp)
+    #dense_hamiltonian_jw    = sparse_hamiltonian_jw.todense()
+    #classical_energy        = np.amin(la.eigh(dense_hamiltonian_jw)[0])
+
+    # Due to difficulty in reliably installing forestopenfermion + openfermion,
+    # the code above is temporarily commented out.
+    # The following result has been obtained using the code above:
+    #
+    classical_energy        = -2.8077839575399746
 
     # ---------------------------------------- run VQE: ----------------------------------------
 
@@ -212,8 +221,9 @@ if __name__ == '__main__':
         "minimizer_method"  : minimizer_method,
         "minimizer_options" : minimizer_options,
         "sample_number"     : sample_number,
-        "minimizer_src"     : minimizer_src
-        }
+        "minimizer_src"     : minimizer_src,
+        "classical_energy"  : classical_energy,
+    }
 
     output_dict     = { "vqe_input" : vqe_input, "vqe_output" : vqe_output, "report" : report }
     formatted_json  = json.dumps(output_dict, cls=NumpyEncoder, sort_keys = True, indent = 4)
@@ -222,4 +232,3 @@ if __name__ == '__main__':
 
     with open('rigetti_vqe_report.json', 'w') as json_file:
         json_file.write( formatted_json )
-
