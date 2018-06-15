@@ -36,13 +36,6 @@
       "skip_pruning_by_other_deps": "yes", 
       "sort": 20, 
       "tags": "lib,pyquil"
-    },
-    "lib-forestopenfermion": {
-      "local": "yes",
-      "name": "Rigetti ForestOpenFermion",
-      "skip_pruning_by_other_deps": "yes",
-      "sort": 30,
-      "tags": "lib,forestopenfermion"
     }
   }, 
   "run_vars": {

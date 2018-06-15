@@ -12,14 +12,14 @@ import time
 import inspect
 
 import numpy as np
-from scipy import linalg as la
+#from scipy import linalg as la
 
 import pyquil.api
 from pyquil.quil import Program
 from pyquil.paulis import PauliTerm
 from pyquil.gates import *
-from forestopenfermion import pyquilpauli_to_qubitop
-from openfermion.transforms import jordan_wigner, get_fermion_operator, get_sparse_operator
+#from forestopenfermion import pyquilpauli_to_qubitop
+#from openfermion.transforms import jordan_wigner, get_fermion_operator, get_sparse_operator
 
 from hackathon.utils import cmdline_parse_and_report
 
@@ -202,16 +202,16 @@ if __name__ == '__main__':
     # Transforming the Rigetti-style hamiltonian into numpy-friendly dense form
     # to compute the energy classically:
     #
-    qubitOp                 = pyquilpauli_to_qubitop(hamiltonian)
-    sparse_hamiltonian_jw   = get_sparse_operator(qubitOp)
-    dense_hamiltonian_jw    = sparse_hamiltonian_jw.todense()
-    classical_energy        = np.amin(la.eigh(dense_hamiltonian_jw)[0])
+    #qubitOp                 = pyquilpauli_to_qubitop(hamiltonian)
+    #sparse_hamiltonian_jw   = get_sparse_operator(qubitOp)
+    #dense_hamiltonian_jw    = sparse_hamiltonian_jw.todense()
+    #classical_energy        = np.amin(la.eigh(dense_hamiltonian_jw)[0])
 
     # Due to difficulty in reliably installing forestopenfermion + openfermion,
     # the code above is temporarily commented out.
     # The following result has been obtained using the code above:
     #
-    #classical_energy        = -2.8077839575399746
+    classical_energy        = -2.8077839575399746
 
     # ---------------------------------------- run VQE: ----------------------------------------
 
