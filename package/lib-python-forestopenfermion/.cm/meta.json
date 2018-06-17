@@ -3,7 +3,8 @@
   "customize": {
     "install_env": {
       "PIP_INSTALL_OPTIONS": "--ignore-installed", 
-      "PYTHON_PACKAGE_NAME": "openfermion forestopenfermion"
+      "PYTHON_PACKAGE_NAME1": "openfermion",
+      "PYTHON_PACKAGE_NAME2": " forestopenfermion"
     },
     "version": "0.0.3"
   }, 
@@ -14,17 +15,22 @@
       "name": "Python interpreter", 
       "sort": 10, 
       "tags": "compiler,python"
+    },
+    "lib-pyquil": {
+      "add_to_path": "yes", 
+      "local": "yes", 
+      "name": "pyQuil library", 
+      "sort": 20, 
+      "tags": "lib,pyquil"
     }
   }, 
   "end_full_path_universal": "build$#sep#$forestopenfermion$#sep#$__init__.py", 
-  "only_for_host_os_tags": [
-    "linux"
-  ], 
   "only_for_target_os_tags": [
-    "linux"
-  ], 
+    "linux",
+    "windows"
+  ],
   "process_script": "install", 
-  "soft_uoa": "lib.python.forestopenfermion", 
+  "soft_uoa": "de06c4f94c948562", 
   "suggested_path": "lib-python-forestopenfermion", 
   "tags": [
     "lib", 

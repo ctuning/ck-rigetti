@@ -65,31 +65,29 @@ def setup(i):
 
     ck              = i['ck_kernel']
 
-    forest_api_key  = os.environ.get('PYQUIL_FOREST_API_KEY','')
-    user_id         = os.environ.get('PYQUIL_USER_ID','')
+    cus=i.get('customize',{})
 
-    interactive     = i.get('interactive','')
+    hosd=i['host_os_dict']
+    tosd=i['target_os_dict']
 
-    env             = i['env']                      # target structure to deposit the future environment variables
+    winh=hosd.get('windows_base','')
 
-    if interactive and not (forest_api_key and user_id):
-        kernel_ret = ck.inp({'text': 'Please enter your Forest API key: '})
-        if kernel_ret['return']:
-            return kernel_ret
-        else:
-            forest_api_key = kernel_ret['string']
+    env = i['env'] 
 
-        kernel_ret = ck.inp({'text': 'Please enter your Forest User ID: '})
-        if kernel_ret['return']:
-            return kernel_ret
-        else:
-            user_id = kernel_ret['string']
+    full_path               = cus.get('full_path','')
 
-    if forest_api_key and user_id:
-        env['QVM_API_KEY']  = forest_api_key
-        env['QVM_USER_ID']  = user_id
-    else:
-        return {'return':1, 'error':'Environment variables PYQUIL_FOREST_API_KEY and PYQUIL_USER_ID should be set!'}
+    r=ck.load_json_file({'json_file':full_path})
+    if r['return']>0: return r
 
+    d=r['dict']
+
+    env['QVM_API_KEY']  = d['QVM_API_KEY']
+    env['QVM_USER_ID']  = d['QVM_USER_ID']
+
+    # For now write dummy JSON (it was used to pass info) - later can remove passwords and add other important info
+    d={}
+    r=ck.save_json_to_file({'json_file':full_path, 'dict':d})
+    if r['return']>0: return r
+    
     return {'return':0, 'bat':''}
 

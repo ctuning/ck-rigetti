@@ -1,0 +1,26 @@
+{
+  "check_exit_status": "yes", 
+  "comment": "prepare login forest", 
+  "customize": {
+   "version": "1.0"
+  }, 
+  "deps": {
+  }, 
+  "end_full_path_universal": "login-forest-rigetti.json", 
+  "only_for_target_os_tags": [
+    "linux",
+    "windows"
+  ], 
+  "soft_uoa": "0c427f817ea3c212", 
+  "suggested_path": "login-forest-rigetti", 
+  "tags": [
+    "login",
+    "quantum",
+    "rigetti",
+    "forest",
+    "api_key",
+    "user_id",
+    "credentials",
+    "password"
+  ]
+}

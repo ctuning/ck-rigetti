@@ -1,41 +1,40 @@
 {
-  "check_exit_status": "yes", 
-  "comment": "install pyQuil", 
+  "check_exit_status": "yes",
+  "comment": "install pyQuil",
   "customize": {
     "install_env": {
-        "PACKAGE_COMMIT" : "master"
+      "PACKAGE_COMMIT": "master"
     },
-    "version" : "master"
-  }, 
+    "version": "master"
+  },
   "deps": {
     "forest login": {
-      "local": "yes", 
-      "name": "Rigetti Forest credentials", 
-      "sort": 5, 
+      "local": "yes",
+      "name": "Rigetti Forest credentials",
+      "skip_default": "yes",
+      "sort": 5,
       "tags": "forest,login"
-    }, 
+    },
     "python": {
-      "add_to_path": "yes", 
-      "local": "yes", 
-      "name": "Python interpreter", 
-      "sort": 10, 
+      "add_to_path": "yes",
+      "local": "yes",
+      "name": "Python interpreter",
+      "sort": 10,
       "tags": "compiler,python"
     }
-  }, 
-  "end_full_path_universal": "build$#sep#$pyquil$#sep#$__init__.py", 
-  "only_for_host_os_tags": [
-    "linux"
-  ], 
+  },
+  "end_full_path_universal": "build$#sep#$pyquil$#sep#$__init__.py",
   "only_for_target_os_tags": [
-    "linux"
-  ], 
-  "process_script": "install", 
-  "soft_uoa": "lib.pyquil", 
-  "suggested_path": "lib-pyquil", 
+    "linux",
+    "windows"
+  ],
+  "process_script": "install",
+  "soft_uoa": "7a688556e84d7c47",
+  "suggested_path": "lib-pyquil",
   "tags": [
-    "lib", 
-    "quantum", 
-    "rigetti", 
+    "lib",
+    "quantum",
+    "rigetti",
     "pyquil",
     "with-examples",
     "vmaster"

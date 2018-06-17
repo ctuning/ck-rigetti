@@ -1,7 +1,7 @@
 #! /bin/bash
 
 #
-# Installation script for Caffe.
+# Installation script for QCK package.
 #
 # See CK LICENSE for licensing details.
 # See CK COPYRIGHT for copyright details.
@@ -9,7 +9,8 @@
 
 # PACKAGE_DIR
 # INSTALL_DIR
-# PYTHON_PACKAGE_NAME
+# PYTHON_PACKAGE_NAME1
+# PYTHON_PACKAGE_NAME2
 # PIP_INSTALL_OPTIONS
 
 
@@ -28,9 +29,9 @@ echo "Cleanup: removing ${EXTRA_PYTHON_SITE}"
 rm -rf "${EXTRA_PYTHON_SITE}"
 
 ######################################################################################
-echo "Installing '${PYTHON_PACKAGE_NAME}' and its dependencies to '${PACKAGE_LIB_DIR}' ..."
+echo "Installing '${PYTHON_PACKAGE_NAME1} ${PYTHON_PACKAGE_NAME2}' and its dependencies to '${PACKAGE_LIB_DIR}' ..."
 
-${CK_ENV_COMPILER_PYTHON_FILE} -m pip install ${PYTHON_PACKAGE_NAME} --prefix=${EXTRA_PYTHON_SITE} ${PIP_INSTALL_OPTIONS}
+${CK_ENV_COMPILER_PYTHON_FILE} -m pip install ${PYTHON_PACKAGE_NAME1} ${PYTHON_PACKAGE_NAME2} --prefix=${EXTRA_PYTHON_SITE} ${PIP_INSTALL_OPTIONS}
 
 if [ "${?}" != "0" ] ; then
   echo "Error: installation failed!"
