@@ -11,7 +11,7 @@ import argparse
 import json
 import numpy as np
 
-from hackathon.utils import *
+from hackathon_utils import *
 
 
 arg_parser  = argparse.ArgumentParser()

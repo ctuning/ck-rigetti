@@ -21,7 +21,7 @@ from pyquil.gates import *
 #from forestopenfermion import pyquilpauli_to_qubitop
 #from openfermion.transforms import jordan_wigner, get_fermion_operator, get_sparse_operator
 
-from hackathon.utils import cmdline_parse_and_report
+from hackathon_utils import cmdline_parse_and_report
 
 
 # See https://stackoverflow.com/questions/26646362/numpy-array-is-not-json-serializable
