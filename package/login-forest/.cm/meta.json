@@ -12,6 +12,7 @@
     "windows"
   ], 
   "soft_uoa": "0c427f817ea3c212", 
+  "process_script": "install",
   "suggested_path": "login-forest-rigetti", 
   "tags": [
     "login",

@@ -96,7 +96,17 @@ def setup(i):
     else:
         return {'return':1, 'error':'Environment variables PYQUIL_FOREST_API_KEY and PYQUIL_USER_ID should be set!'}
 
-    r=ck.save_json_to_file({'json_file':pix, 'dict':nie})
+    # Generate tmp file
+    r=ck.gen_tmp_file({})
     if r['return']>0: return r
 
-    return {'return':0}
+    tmp_file_name=r['file_name']
+
+    nie['TMP_RIGETTI_LOGIN_FILE']=tmp_file_name
+    nie['RIGETTI_LOGIN_FILE']=pix
+
+    # Save JSON to tmp file (will be picked up by install.sh and recored to INSTALL dir)
+    r=ck.save_json_to_file({'json_file':tmp_file_name, 'dict':nie})
+    if r['return']>0: return r
+
+    return {'return':0, 'install_env':nie}
