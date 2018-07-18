@@ -72,6 +72,7 @@ install:
     - ck pull repo:${THIS_REPO_NAME}                                            # trigger pulling dependent repositories
     - echo $CK_PLATFORM_INDEX | ck detect platform.os --update_platform_init    # set the platform to generic-linux (1) or generic-macos (2)
     -          ck detect soft:compiler.python --full_path=`which python`        # pick the one Travis has set for us in the PATH
+    -          ck detect soft:lib.python.scipy                                  # pick the one installed because of requirements.txt
     -          ck install package:lib-pyquil-1.9.0                              # have to install this again into CK's registered space
 
 script:
