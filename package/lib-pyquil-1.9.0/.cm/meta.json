@@ -8,13 +8,6 @@
     "version": "1.9.0"
   },
   "deps": {
-    "forest login": {
-      "local": "yes",
-      "name": "Rigetti Forest credentials",
-      "skip_default": "yes",
-      "sort": 5,
-      "tags": "forest,login"
-    },
     "python": {
       "add_to_path": "yes",
       "local": "yes",

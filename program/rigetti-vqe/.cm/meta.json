@@ -23,12 +23,25 @@
     }
   }, 
   "run_deps": {
+    "forest login": {
+      "local": "yes",
+      "name": "Rigetti Forest credentials",
+      "skip_default": "yes",
+      "sort": 5,
+      "tags": "forest,login"
+    },
     "hackathon-plugin": {
       "local": "yes",
       "name": "ck-quantum",
       "skip_pruning_by_other_deps": "yes",
       "sort": 10,
       "tags": "tool,ck-quantum,hackathon"
+    },
+    "python": {
+      "local": "yes",
+      "name": "Python interpreter",
+      "sort": 15,
+      "tags": "compiler,python"
     },
     "lib-pyquil": {
       "local": "yes", 
