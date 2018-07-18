@@ -77,7 +77,7 @@ install:
 script:
     - |
         if [ $TRAVIS_CK_WHICH_TEST == "vqe_helium" ]; then
-            ck run program:vqe-demo --env.VQE_MAX_ITERATIONS=10
+            ck run program:rigetti-vqe --env.VQE_MAX_ITERATIONS=10
         else
             ck run program:pyquil-demo --cmd_key=${TRAVIS_CK_WHICH_TEST} ${QUIL_FILE:+--env.QUIL_FILE=${QUIL_FILE}}
         fi
