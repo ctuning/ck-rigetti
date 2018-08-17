@@ -54,16 +54,18 @@
   "run_vars": {
     "VQE_START_PARAMS"          : "1 1",
     "VQE_SAMPLE_SIZE"           : 1000,
-    "RIGETTI_QUANTUM_DEVICE"    : "QVM",
     "VQE_MINIMIZER_METHOD"      : "my_random_sampler",
-    "VQE_MAX_ITERATIONS"        : 15
+    "VQE_MAX_ITERATIONS"        : 15,
+    "RIGETTI_QUANTUM_DEVICE"    : "QVM"
   }, 
   "tags": [
-    "pyquil", 
-    "rigetti", 
-    "demo", 
-    "examples", 
-    "vqe", 
-    "helium"
+    "rigetti",
+    "pyquil",
+    "demo",
+    "examples",
+    "vqe",
+    "vqe-implementation",
+    "helium",
+    "hackathon"
   ]
 }
