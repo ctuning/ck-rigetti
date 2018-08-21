@@ -26,7 +26,6 @@
     "forest login": {
       "local": "yes", 
       "name": "Rigetti Forest credentials", 
-      "skip_default": "yes", 
       "sort": 10, 
       "tags": "forest,login"
     }, 
