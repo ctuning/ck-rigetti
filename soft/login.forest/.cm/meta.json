@@ -2,15 +2,27 @@
   "auto_detect": "yes", 
   "customize": {
     "check_that_exists": "yes", 
-    "env_prefix": "CK_ENV_RIGETTI_FOREST_LOGIN", 
+    "env_prefix": "CK_ENV_LOGIN_RIGETTI_FOREST",
     "limit_recursion_dir_search": {
-      "linux": 3, 
-      "win": 3
+      "linux": 0,
+      "win": 0
     }, 
-    "soft_file_universal": "login-forest-rigetti.json"
+    "detect_in_soft_dir": "yes",
+    "soft_file_universal": ".cm/meta.json",
+    "env_mapping": [
+        {
+            "variable"      : "QVM_API_KEY",
+            "display_name"  : "your Forest API key"
+        },
+        {
+            "variable"      : "QVM_USER_ID",
+            "display_name"  : "your Forest User ID"
+        }
+    ]
   }, 
   "soft_name": "Rigetti Forest Login", 
   "tags": [
+    "dialogue",
     "login",
     "quantum",
     "rigetti",
@@ -19,5 +31,9 @@
     "user_id",
     "credentials",
     "password"
-  ]
+  ],
+  "use_customize_script_from_another_entry": {
+    "data_uoa": "f14e1ed51a944f13",
+    "module_uoa": "soft"
+  }
 }
