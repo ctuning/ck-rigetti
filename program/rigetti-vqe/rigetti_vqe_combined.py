@@ -217,7 +217,7 @@ if __name__ == '__main__':
     }[molecule]
 
     start_params, sample_number, q_device_name, minimizer_method, minimizer_options, minimizer_function = cmdline_parse_and_report(
-        num_params                  = 1,
+        num_params                  = num_ansatz_params,
         q_device_name_default       = 'QVM',
         q_device_name_help          = "Real devices: '8Q-Agave' or '19Q-Acorn'. Either 'QVM' or '' for remote simulator",
         minimizer_options_default   = '{}'
@@ -257,7 +257,7 @@ if __name__ == '__main__':
 
     # ---------------------------------------- run VQE: ----------------------------------------
 
-    (vqe_output, report) = vqe(q_device, hydrogen_ansatz, hamiltonian, start_params, minimizer_function, minimizer_options, sample_number)
+    (vqe_output, report) = vqe(q_device, ansatz_function, hamiltonian, start_params, minimizer_function, minimizer_options, sample_number)
 
     # ---------------------------------------- store the results: ----------------------------------------
 
