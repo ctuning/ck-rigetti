@@ -26,35 +26,35 @@
     "forest login": {
       "local": "yes", 
       "name": "Rigetti Forest credentials", 
-      "sort": 10, 
+      "sort": 5,
       "tags": "forest,login"
-    }, 
-    "vqe-utils-plugin": {
-      "local": "yes", 
-      "name": "VQE Python utility functions", 
-      "skip_pruning_by_other_deps": "yes", 
-      "sort": 20, 
-      "tags": "quantum,vqe,utils,lib"
-    },
-    "optimizer-plugin": {
-      "local": "yes", 
-      "name": "Python optimizer function", 
-      "skip_pruning_by_other_deps": "yes", 
-      "sort": 30, 
-      "tags": "quantum,optimizer"
     }, 
     "python": {
       "local": "yes", 
       "name": "Python interpreter", 
-      "sort": 40, 
+      "sort": 10,
       "tags": "compiler,python"
     }, 
     "lib-pyquil": {
       "local": "yes", 
       "name": "Rigetti pyQuil", 
       "skip_pruning_by_other_deps": "yes", 
-      "sort": 50, 
+      "sort": 20,
       "tags": "lib,pyquil"
+    },
+    "optimizer-plugin": {
+      "local": "yes",
+      "name": "Deployed python optimizer function",
+      "skip_pruning_by_other_deps": "yes",
+      "sort": 30,
+      "tags": "quantum,optimizer,deployed"
+    },
+    "vqe-utils-plugin": {
+      "local": "yes",
+      "name": "VQE Python utility functions",
+      "skip_pruning_by_other_deps": "yes",
+      "sort": 40,
+      "tags": "quantum,vqe,utils,lib"
     }
   }, 
   "run_vars": {
