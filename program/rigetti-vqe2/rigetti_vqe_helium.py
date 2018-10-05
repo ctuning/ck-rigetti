@@ -171,8 +171,9 @@ if __name__ == '__main__':
         num_params                  = 2,
         q_device_name_default       = 'QVM',
         q_device_name_help          = "Real devices: '8Q-Agave' or '19Q-Acorn'. Either 'QVM' or '' for remote simulator",
-        minimizer_options_default   = '{}'
-        )
+        minimizer_options_default   = '{}',
+        start_param_value_default   = 0.0
+    )
 
     # ---------------------------------------- pyquil-specific init: ----------------------------------------
 

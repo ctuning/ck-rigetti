@@ -15,7 +15,7 @@
       "run_time": {
         "fine_grain_timer_file": "rigetti_vqe_report.json", 
         "output_invariant_of_repeat": "no", 
-        "run_cmd_main": "$<<CK_ENV_COMPILER_PYTHON_FILE>>$ ../rigetti_vqe_helium.py --start-params $<<VQE_START_PARAMS>>$ --sample_number $<<VQE_SAMPLE_SIZE>>$ --q-device-name $<<VQE_QUANTUM_BACKEND>>$ --max_func_evaluations $<<VQE_MAX_ITERATIONS>>$",
+        "run_cmd_main": "$<<CK_ENV_COMPILER_PYTHON_FILE>>$ ../rigetti_vqe_helium.py --sample_number $<<VQE_SAMPLE_SIZE>>$ --q-device-name $<<VQE_QUANTUM_BACKEND>>$ --max_func_evaluations $<<VQE_MAX_ITERATIONS>>$ --start_param_value $<<VQE_START_PARAM_VALUE>>$",
         "run_output_files": [
           "rigetti_vqe_report.json"
         ]
@@ -58,10 +58,10 @@
     }
   }, 
   "run_vars": {
-    "VQE_QUANTUM_BACKEND": "QVM",
-    "VQE_MAX_ITERATIONS": 15,
-    "VQE_SAMPLE_SIZE": 1000,
-    "VQE_START_PARAMS": "1 1"
+    "VQE_SAMPLE_SIZE":          1000,
+    "VQE_MAX_ITERATIONS":       15,
+    "VQE_START_PARAM_VALUE":    0.0,
+    "VQE_QUANTUM_BACKEND":      "QVM"
   }, 
   "tags": [
     "pyquil", 
