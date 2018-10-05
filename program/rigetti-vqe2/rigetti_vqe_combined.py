@@ -44,7 +44,7 @@ class NumpyEncoder(json.JSONEncoder):
         return json.JSONEncoder.default(self, obj)
 
 
-def vqe(q_device, ansatz, hamiltonian, start_params, minimizer_function, minimizer_options, sample_number):
+def vqe_for_pyquil(q_device, ansatz, hamiltonian, start_params, minimizer_function, minimizer_options, sample_number, json_stream_file):
 
     def expectation_estimation(ab, report):
         """
@@ -118,6 +118,8 @@ def vqe(q_device, ansatz, hamiltonian, start_params, minimizer_function, minimiz
         report_this_iteration['total_seconds_per_c_iteration'] = time.time() - timestamp_before_ee
 
         print(report_this_iteration, "\n")
+        json_stream_file.write( json.dumps(report_this_iteration, cls=NumpyEncoder)+"\n" )
+        json_stream_file.flush()
 
         return energy
 
@@ -259,11 +261,16 @@ if __name__ == '__main__':
     ## Due to difficulty in reliably installing forestopenfermion + openfermion,
     ## the code above is temporarily commented out and substituted by a pre-computed constant value.
 
+    json_stream_file = open('vqe_stream.json', 'a')
+
     # ---------------------------------------- run VQE: ----------------------------------------
 
-    (vqe_output, report) = vqe(q_device, ansatz_function, hamiltonian, start_params, minimizer_function, minimizer_options, sample_number)
+    (vqe_output, report) = vqe_for_pyquil(q_device, ansatz_function, hamiltonian, start_params, minimizer_function, minimizer_options, sample_number, json_stream_file)
 
     # ---------------------------------------- store the results: ----------------------------------------
+
+    json_stream_file.write( '# Experiment finished\n' )
+    json_stream_file.close()
 
     minimizer_src   = inspect.getsource( minimizer_function )
     ansatz_src      = inspect.getsource( ansatz_function )
