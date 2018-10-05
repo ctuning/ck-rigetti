@@ -156,7 +156,7 @@ helium_sto_3g_hamiltonian = \
         0.7019459893849936*PauliTerm('Z',1)
 
 
-def helium_tiny_ansatz(ab):
+def pyquil_tiny_ansatz_2(ab):
     "in this trial, we also explicitly supply the UCC ansatz"
 
     return Program(
@@ -187,7 +187,7 @@ hydrogen_sto_3g_hamiltonian = \
         -0.3399536172489041 * PauliTerm("I", 0)
 
 
-def hydrogen_ansatz(ab):
+def pyquil_tiny_ansatz_1(ab):
 
     return Program(
         X(0),
@@ -211,10 +211,13 @@ if __name__ == '__main__':
 
     ## A tuple of pre-selected constants for each molecule:
     #
-    (hamiltonian, ansatz_function, num_ansatz_params, classical_energy) = {
-        'helium'    : (helium_sto_3g_hamiltonian, helium_tiny_ansatz, 2, -2.8077839575399746),
-        'hydrogen'  : (hydrogen_sto_3g_hamiltonian, hydrogen_ansatz, 1, -1.13727017),
+    (hamiltonian, classical_energy) = {
+        'helium'    : (helium_sto_3g_hamiltonian, -2.8077839575399746),
+        'hydrogen'  : (hydrogen_sto_3g_hamiltonian, -1.13727017),
     }[molecule]
+
+    (ansatz_function, num_ansatz_params) = (pyquil_tiny_ansatz_2, 2)
+    #(ansatz_function, num_ansatz_params) = (pyquil_tiny_ansatz_1, 1)
 
     start_params, sample_number, q_device_name, minimizer_method, minimizer_options, minimizer_function = cmdline_parse_and_report(
         num_params                  = num_ansatz_params,
