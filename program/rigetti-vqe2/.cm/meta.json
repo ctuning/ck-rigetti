@@ -56,6 +56,13 @@
       "sort": 40,
       "tags": "quantum,hamiltonian"
     },
+    "ansatz-plugin": {
+      "local": "yes",
+      "name": "pyQuil ansatz function",
+      "skip_pruning_by_other_deps": "yes",
+      "sort": 50,
+      "tags": "quantum,pyquil,ansatz,deployed"
+    },
     "optimizer-plugin": {
       "local": "yes",
       "name": "Deployed python optimizer function",

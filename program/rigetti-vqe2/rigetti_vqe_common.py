@@ -29,9 +29,10 @@ from pyquil.gates import *
 #from forestopenfermion import pyquilpauli_to_qubitop
 #from openfermion.transforms import jordan_wigner, get_fermion_operator, get_sparse_operator
 
-from vqe_utils import cmdline_parse_and_report, NumpyEncoder
+from vqe_utils import cmdline_parse_and_report, get_first_callable, NumpyEncoder
 
 from vqe_hamiltonian import label_to_hamiltonian_coeff, classical_energy    # the file contents will be different depending on the plugin choice
+import custom_ansatz                                                        # the file contents will be different depending on the plugin choice
 
 
 def vqe_for_pyquil(q_device, ansatz, hamiltonian, start_params, minimizer_function, minimizer_options, sample_number, json_stream_file):
@@ -141,44 +142,6 @@ def vqe_for_pyquil(q_device, ansatz, hamiltonian, start_params, minimizer_functi
     return (optimizer_output, report)
 
 
-def pyquil_tiny_ansatz_2(ab):
-    "in this trial, we also explicitly supply the UCC ansatz"
-
-    return Program(
-        X(0),
-        X(1),
-        RX(np.pi/2, 0),
-        H(1),
-        CNOT(0, 1),
-        RZ( ab[0] )(1),
-        CNOT(0, 1),
-        RX(-np.pi/2)(0),
-        H(1),
-        H(0),
-        RX(np.pi/2)(1),
-        CNOT(0, 1),
-        RZ( ab[1] )(1),
-        CNOT(0, 1),
-        H(0),
-        RX(-np.pi/2, 1)
-    )
-
-
-def pyquil_tiny_ansatz_1(ab):
-
-    return Program(
-        X(0),
-        X(1),
-        RX(-np.pi/2, 0),
-        RY(np.pi/2, 1),
-        CNOT(0, 1),
-        RZ(ab[0], 1),
-        CNOT(0, 1),
-        RX(np.pi/2, 0),
-        RY(-np.pi/2, 1)
-    )
-
-
 if __name__ == '__main__':
 
     # Load the Hamiltonian into Pyquil-friendly format:
@@ -189,11 +152,8 @@ if __name__ == '__main__':
     hamiltonian = PauliSum( pauli_list )
 
 
-    (ansatz_function, num_ansatz_params) = (pyquil_tiny_ansatz_2, 2)
-    #(ansatz_function, num_ansatz_params) = (pyquil_tiny_ansatz_1, 1)
-
     start_params, sample_number, q_device_name, minimizer_method, minimizer_options, minimizer_function = cmdline_parse_and_report(
-        num_params                  = num_ansatz_params,
+        num_params                  = custom_ansatz.num_params,
         q_device_name_default       = 'QVM',
         q_device_name_help          = "Real devices: '8Q-Agave' or '19Q-Acorn'. Either 'QVM' or '' for remote simulator",
         minimizer_options_default   = '{}',
@@ -232,6 +192,12 @@ if __name__ == '__main__':
     ## Due to difficulty in reliably installing forestopenfermion + openfermion,
     ## the code above is temporarily commented out and substituted by a pre-computed constant value.
 
+    print('The exact ground state energy (the smallest eigenvalue of the Hamiltonian) is: {:.4f}'.format(classical_energy))
+
+    # Load the ansatz function from the plug-in
+    ansatz_method   = get_first_callable( custom_ansatz )
+    ansatz_function = getattr(custom_ansatz, ansatz_method)     # ansatz_method is a string/name, ansatz_function is an imported callable
+
     json_stream_file = open('vqe_stream.json', 'a')
 
     # ---------------------------------------- run VQE: ----------------------------------------
@@ -245,7 +211,6 @@ if __name__ == '__main__':
 
     minimizer_src   = inspect.getsource( minimizer_function )
     ansatz_src      = inspect.getsource( ansatz_function )
-    ansatz_method   = ansatz_function.__name__
 
     vqe_input = {
         "q_device_name"     : q_device_name,
