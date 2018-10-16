@@ -1,10 +1,19 @@
 #!/usr/bin/env python3
 
+#
+# Copyright (c) 2018 cTuning foundation, River Lane Research, dividiti
+# SPDX-Licence-Identifier: BSD-3-Clause
+#
+# Parts of this file originated from Rigetti's Grove library (grove/pyvqe/vqe.py)
+# Copyright (c) 2016-2017 Rigetti Computing
+# SPDX-Licence-Identifier: Apache-2.0
+#
+
 """
-This module runs DaoChen's version Variational-Quantum-Eigensolver on Helium
+This script runs Variational-Quantum-Eigensolver using Pyquil library
 
 Example running it partially using CK infrastructure (assuming the current directory is $HOME/CK/ck-rigetti/program/rigetti-vqe) :
-    time ck virtual `ck search env:* --tags=forestopenfermion` `ck search env:* --tags=pyquil` `ck search env:* --tags=login,rigetti` `ck search env:* --tags=vqe,utils` `ck search env:* --tags=quantum,optimizer` --shell_cmd="./rigetti_vqe_helium.py --minimizer_method=my_minimizer --max_func_evaluations=10"
+    time ck virtual `ck search env:* --tags=forestopenfermion` `ck search env:* --tags=pyquil` `ck search env:* --tags=login,rigetti` `ck search env:* --tags=hackathon`  --shell_cmd="./rigetti_vqe_common.py --shots=1000 --minimizer_method=my_minimizer --max_func_evaluations=10"
 """
 
 import json
@@ -12,30 +21,20 @@ import time
 import inspect
 
 import numpy as np
-#from scipy import linalg as la
 
 import pyquil.api
 from pyquil.quil import Program
-from pyquil.paulis import PauliTerm
+from pyquil.paulis import PauliTerm, PauliSum
 from pyquil.gates import *
 #from forestopenfermion import pyquilpauli_to_qubitop
 #from openfermion.transforms import jordan_wigner, get_fermion_operator, get_sparse_operator
 
-from vqe_utils import cmdline_parse_and_report
+from vqe_utils import cmdline_parse_and_report, NumpyEncoder
+
+from vqe_hamiltonian import label_to_hamiltonian_coeff, classical_energy    # the file contents will be different depending on the plugin choice
 
 
-# See https://stackoverflow.com/questions/26646362/numpy-array-is-not-json-serializable
-#
-class NumpyEncoder(json.JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, np.ndarray):
-            return obj.tolist()
-        elif isinstance(obj, np.bool_):
-            return bool(obj)
-        return json.JSONEncoder.default(self, obj)
-
-
-def daochens_vqe(q_device, ansatz, hamiltonian, start_params, minimizer_function, minimizer_options, sample_number):
+def vqe_for_pyquil(q_device, ansatz, hamiltonian, start_params, minimizer_function, minimizer_options, sample_number, json_stream_file):
 
     def expectation_estimation(ab, report):
         """
@@ -53,7 +52,7 @@ def daochens_vqe(q_device, ansatz, hamiltonian, start_params, minimizer_function
             'seconds_per_individual_q_run' : [],
             'total_q_shots_per_c_iteration' : 0,
             'shots_per_individual_q_run' : []
-            }
+        }
 
         for j, term in enumerate(hamiltonian.terms):
             meas_basis_change = Program()
@@ -109,6 +108,8 @@ def daochens_vqe(q_device, ansatz, hamiltonian, start_params, minimizer_function
         report_this_iteration['total_seconds_per_c_iteration'] = time.time() - timestamp_before_ee
 
         print(report_this_iteration, "\n")
+        json_stream_file.write( json.dumps(report_this_iteration, cls=NumpyEncoder)+"\n" )
+        json_stream_file.flush()
 
         return energy
 
@@ -128,7 +129,7 @@ def daochens_vqe(q_device, ansatz, hamiltonian, start_params, minimizer_function
     print('Validated value at solution is: {:.4f}'.format(fun_validated))
     optimizer_output['fun_validated'] = fun_validated
 
-    # Exact calculation of the energy using matrix multiplication:
+    # Exact calculation of the energy using QVM:
     progs, coefs    = hamiltonian.get_programs()
     expect_coeffs   = np.array(qvm.expectation(ansatz(optimizer_output['x']), operator_programs=progs))
     optimizer_output['fun_exact']=np.real_if_close(np.dot(coefs, expect_coeffs))
@@ -140,35 +141,59 @@ def daochens_vqe(q_device, ansatz, hamiltonian, start_params, minimizer_function
     return (optimizer_output, report)
 
 
-def helium_tiny_ansatz(ab):
+def pyquil_tiny_ansatz_2(ab):
     "in this trial, we also explicitly supply the UCC ansatz"
 
-    a = ab[0];
-    b = ab[1];
-    p = Program(
-    X(0),
-    X(1),
-    RX(np.pi/2, 0),
-    H(1),
-    CNOT(0, 1),
-    RZ(a)(1),
-    CNOT(0, 1),
-    RX(-np.pi/2)(0),
-    H(1),
-    H(0),
-    RX(np.pi/2)(1),
-    CNOT(0, 1),
-    RZ(b)(1),
-    CNOT(0, 1),
-    H(0),
-    RX(-np.pi/2, 1))
+    return Program(
+        X(0),
+        X(1),
+        RX(np.pi/2, 0),
+        H(1),
+        CNOT(0, 1),
+        RZ( ab[0] )(1),
+        CNOT(0, 1),
+        RX(-np.pi/2)(0),
+        H(1),
+        H(0),
+        RX(np.pi/2)(1),
+        CNOT(0, 1),
+        RZ( ab[1] )(1),
+        CNOT(0, 1),
+        H(0),
+        RX(-np.pi/2, 1)
+    )
 
-    return p
+
+def pyquil_tiny_ansatz_1(ab):
+
+    return Program(
+        X(0),
+        X(1),
+        RX(-np.pi/2, 0),
+        RY(np.pi/2, 1),
+        CNOT(0, 1),
+        RZ(ab[0], 1),
+        CNOT(0, 1),
+        RX(np.pi/2, 0),
+        RY(-np.pi/2, 1)
+    )
 
 
 if __name__ == '__main__':
+
+    # Load the Hamiltonian into Pyquil-friendly format:
+    pauli_list  = []
+    for label in label_to_hamiltonian_coeff:
+        zipped_list = [(label[j], j) for j in range(len(label))]
+        pauli_list.append( label_to_hamiltonian_coeff[label] * PauliTerm.from_list( zipped_list ) )
+    hamiltonian = PauliSum( pauli_list )
+
+
+    (ansatz_function, num_ansatz_params) = (pyquil_tiny_ansatz_2, 2)
+    #(ansatz_function, num_ansatz_params) = (pyquil_tiny_ansatz_1, 1)
+
     start_params, sample_number, q_device_name, minimizer_method, minimizer_options, minimizer_function = cmdline_parse_and_report(
-        num_params                  = 2,
+        num_params                  = num_ansatz_params,
         q_device_name_default       = 'QVM',
         q_device_name_help          = "Real devices: '8Q-Agave' or '19Q-Acorn'. Either 'QVM' or '' for remote simulator",
         minimizer_options_default   = '{}',
@@ -183,51 +208,53 @@ if __name__ == '__main__':
     else:
         q_device    = pyquil.api.QPUConnection( q_device_name )
 
-    # input molecule and basis set (this is the only user input necessary to perform VQE
-    # on the Rigetti quantum computer with a UCC ansatz)
-    name = 'helium'
-    basis = 'sto-3g'
 
-    # # this input would be then converted to the correct Hamiltonian using the q_chem library
-    # # developed here at River Lane
+    ## Input molecule and basis set (this is the only user input necessary to perform VQE
+    ## on the Rigetti quantum computer with a UCC ansatz)
+    #
+    #name, basis = 'hydrogen', 'sto-3g'
+    #
+    ## This input would be then converted to the correct Hamiltonian using the q_chem library
+    ## developed at River Lane
     # import q_chem
     # _, _, hamiltonian, _, _ = q_chem.run_chem(name, basis)
 
-    # in this trial, we instead explicitly supply the hamiltonian for "helium, sto-3g"
-    hamiltonian = \
-        -1.6678202144537553*PauliTerm('I',0) + \
-        0.7019459893849936*PauliTerm('Z',0) + \
-        0.263928235683768058*PauliTerm.from_list([("Z", 0), ("Z", 1)]) + \
-        0.7019459893849936*PauliTerm('Z',1)
 
-    # Transforming the Rigetti-style hamiltonian into numpy-friendly dense form
-    # to compute the energy classically:
+    ## Transforming the Rigetti-style hamiltonian into numpy-friendly dense form
+    ## to compute the energy classically:
     #
     #qubitOp                 = pyquilpauli_to_qubitop(hamiltonian)
     #sparse_hamiltonian_jw   = get_sparse_operator(qubitOp)
     #dense_hamiltonian_jw    = sparse_hamiltonian_jw.todense()
     #classical_energy        = np.amin(la.eigh(dense_hamiltonian_jw)[0])
-
-    # Due to difficulty in reliably installing forestopenfermion + openfermion,
-    # the code above is temporarily commented out.
-    # The following result has been obtained using the code above:
+    #print("Classical energy: {}".format(classical_energy))
     #
-    classical_energy        = -2.8077839575399746
+    ## Due to difficulty in reliably installing forestopenfermion + openfermion,
+    ## the code above is temporarily commented out and substituted by a pre-computed constant value.
+
+    json_stream_file = open('vqe_stream.json', 'a')
 
     # ---------------------------------------- run VQE: ----------------------------------------
 
-    (vqe_output, report) = daochens_vqe(q_device, helium_tiny_ansatz, hamiltonian, start_params, minimizer_function, minimizer_options, sample_number)
+    (vqe_output, report) = vqe_for_pyquil(q_device, ansatz_function, hamiltonian, start_params, minimizer_function, minimizer_options, sample_number, json_stream_file)
 
     # ---------------------------------------- store the results: ----------------------------------------
 
+    json_stream_file.write( '# Experiment finished\n' )
+    json_stream_file.close()
+
     minimizer_src   = inspect.getsource( minimizer_function )
+    ansatz_src      = inspect.getsource( ansatz_function )
+    ansatz_method   = ansatz_function.__name__
 
     vqe_input = {
         "q_device_name"     : q_device_name,
         "minimizer_method"  : minimizer_method,
-        "minimizer_options" : minimizer_options,
-        "sample_number"     : sample_number,
         "minimizer_src"     : minimizer_src,
+        "minimizer_options" : minimizer_options,
+        "ansatz_method"     : ansatz_method,
+        "ansatz_src"        : ansatz_src,
+        "sample_number"     : sample_number,
         "classical_energy"  : classical_energy,
     }
 
