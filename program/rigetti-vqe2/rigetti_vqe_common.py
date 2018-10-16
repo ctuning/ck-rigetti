@@ -10,7 +10,7 @@
 #
 
 """
-This module runs Oscar and Daochen's version of Variational-Quantum-Eigensolver
+This script runs Variational-Quantum-Eigensolver using Pyquil library
 
 Example running it partially using CK infrastructure (assuming the current directory is $HOME/CK/ck-rigetti/program/rigetti-vqe) :
     time ck virtual `ck search env:* --tags=forestopenfermion` `ck search env:* --tags=pyquil` `ck search env:* --tags=login,rigetti` `ck search env:* --tags=hackathon`  --shell_cmd="./rigetti_vqe_common.py --shots=1000 --minimizer_method=my_minimizer --max_func_evaluations=10"
@@ -21,7 +21,6 @@ import time
 import inspect
 
 import numpy as np
-#from scipy import linalg as la
 
 import pyquil.api
 from pyquil.quil import Program
@@ -130,7 +129,7 @@ def vqe_for_pyquil(q_device, ansatz, hamiltonian, start_params, minimizer_functi
     print('Validated value at solution is: {:.4f}'.format(fun_validated))
     optimizer_output['fun_validated'] = fun_validated
 
-    # Exact calculation of the energy using matrix multiplication:
+    # Exact calculation of the energy using QVM:
     progs, coefs    = hamiltonian.get_programs()
     expect_coeffs   = np.array(qvm.expectation(ansatz(optimizer_output['x']), operator_programs=progs))
     optimizer_output['fun_exact']=np.real_if_close(np.dot(coefs, expect_coeffs))
