@@ -25,12 +25,14 @@ import numpy as np
 
 import pyquil.api
 from pyquil.quil import Program
-from pyquil.paulis import PauliTerm
+from pyquil.paulis import PauliTerm, PauliSum
 from pyquil.gates import *
 #from forestopenfermion import pyquilpauli_to_qubitop
 #from openfermion.transforms import jordan_wigner, get_fermion_operator, get_sparse_operator
 
 from vqe_utils import cmdline_parse_and_report, NumpyEncoder
+
+from vqe_hamiltonian import label_to_hamiltonian_coeff, classical_energy    # the file contents will be different depending on the plugin choice
 
 
 def vqe_for_pyquil(q_device, ansatz, hamiltonian, start_params, minimizer_function, minimizer_options, sample_number, json_stream_file):
@@ -140,13 +142,6 @@ def vqe_for_pyquil(q_device, ansatz, hamiltonian, start_params, minimizer_functi
     return (optimizer_output, report)
 
 
-helium_sto_3g_hamiltonian = \
-        -1.6678202144537553*PauliTerm('I',0) + \
-        0.7019459893849936*PauliTerm('Z',0) + \
-        0.263928235683768058*PauliTerm.from_list([("Z", 0), ("Z", 1)]) + \
-        0.7019459893849936*PauliTerm('Z',1)
-
-
 def pyquil_tiny_ansatz_2(ab):
     "in this trial, we also explicitly supply the UCC ansatz"
 
@@ -170,14 +165,6 @@ def pyquil_tiny_ansatz_2(ab):
     )
 
 
-hydrogen_sto_3g_hamiltonian = \
-        0.18128880839426165 * PauliTerm.from_list([("X", 0), ("X", 1)]) + \
-        0.39398367743432866 * PauliTerm("Z", 0) + \
-        0.011236585210827765 * PauliTerm.from_list([("Z", 0), ("Z", 1)]) + \
-        0.3939836774343287 * PauliTerm("Z", 1) + \
-        -0.3399536172489041 * PauliTerm("I", 0)
-
-
 def pyquil_tiny_ansatz_1(ab):
 
     return Program(
@@ -195,17 +182,13 @@ def pyquil_tiny_ansatz_1(ab):
 
 if __name__ == '__main__':
 
-    ## A (very limited) choice of molecule :
-    #
-    #molecule = 'helium'
-    molecule = 'hydrogen'
+    # Load the Hamiltonian into Pyquil-friendly format:
+    pauli_list  = []
+    for label in label_to_hamiltonian_coeff:
+        zipped_list = [(label[j], j) for j in range(len(label))]
+        pauli_list.append( label_to_hamiltonian_coeff[label] * PauliTerm.from_list( zipped_list ) )
+    hamiltonian = PauliSum( pauli_list )
 
-    ## A tuple of pre-selected constants for each molecule:
-    #
-    (hamiltonian, classical_energy) = {
-        'helium'    : (helium_sto_3g_hamiltonian, -2.8077839575399746),
-        'hydrogen'  : (hydrogen_sto_3g_hamiltonian, -1.13727017),
-    }[molecule]
 
     (ansatz_function, num_ansatz_params) = (pyquil_tiny_ansatz_2, 2)
     #(ansatz_function, num_ansatz_params) = (pyquil_tiny_ansatz_1, 1)

@@ -49,6 +49,13 @@
       "sort": 30,
       "tags": "quantum,vqe,utils,lib"
     },
+    "hamiltonian-plugin": {
+      "local": "yes",
+      "name": "Python code that defines the Hamiltonian",
+      "skip_pruning_by_other_deps": "yes",
+      "sort": 40,
+      "tags": "quantum,hamiltonian"
+    },
     "optimizer-plugin": {
       "local": "yes",
       "name": "Deployed python optimizer function",
