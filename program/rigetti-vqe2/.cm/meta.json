@@ -42,19 +42,19 @@
       "sort": 20,
       "tags": "lib,pyquil"
     },
-    "optimizer-plugin": {
-      "local": "yes",
-      "name": "Deployed python optimizer function",
-      "skip_pruning_by_other_deps": "yes",
-      "sort": 30,
-      "tags": "quantum,optimizer,deployed"
-    },
     "vqe-utils-plugin": {
       "local": "yes",
       "name": "VQE Python utility functions",
       "skip_pruning_by_other_deps": "yes",
-      "sort": 40,
+      "sort": 30,
       "tags": "quantum,vqe,utils,lib"
+    },
+    "optimizer-plugin": {
+      "local": "yes",
+      "name": "Deployed python optimizer function",
+      "skip_pruning_by_other_deps": "yes",
+      "sort": 60,
+      "tags": "quantum,optimizer,deployed"
     }
   }, 
   "run_vars": {
@@ -64,11 +64,11 @@
     "VQE_QUANTUM_BACKEND":      "QVM"
   }, 
   "tags": [
+    "vqe",
+    "vqe-implementation",
+    "quantum",
     "pyquil", 
     "rigetti", 
-    "demo", 
-    "examples", 
-    "vqe", 
-    "helium"
+    "hackathon"
   ]
 }
