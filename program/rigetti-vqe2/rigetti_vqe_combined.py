@@ -30,18 +30,7 @@ from pyquil.gates import *
 #from forestopenfermion import pyquilpauli_to_qubitop
 #from openfermion.transforms import jordan_wigner, get_fermion_operator, get_sparse_operator
 
-from vqe_utils import cmdline_parse_and_report
-
-
-# See https://stackoverflow.com/questions/26646362/numpy-array-is-not-json-serializable
-#
-class NumpyEncoder(json.JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, np.ndarray):
-            return obj.tolist()
-        elif isinstance(obj, np.bool_):
-            return bool(obj)
-        return json.JSONEncoder.default(self, obj)
+from vqe_utils import cmdline_parse_and_report, NumpyEncoder
 
 
 def vqe_for_pyquil(q_device, ansatz, hamiltonian, start_params, minimizer_function, minimizer_options, sample_number, json_stream_file):
