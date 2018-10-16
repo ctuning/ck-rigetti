@@ -10,10 +10,10 @@
 #
 
 """
-This module runs Oscar and Daochen's version Variational-Quantum-Eigensolver on Hydrogen
+This module runs Oscar and Daochen's version of Variational-Quantum-Eigensolver
 
 Example running it partially using CK infrastructure (assuming the current directory is $HOME/CK/ck-rigetti/program/rigetti-vqe) :
-    time ck virtual `ck search env:* --tags=forestopenfermion` `ck search env:* --tags=pyquil` `ck search env:* --tags=login,rigetti` `ck search env:* --tags=hackathon`  --shell_cmd="./rigetti_vqe_combined.py --shots=1000 --minimizer_method=my_minimizer --max_func_evaluations=10"
+    time ck virtual `ck search env:* --tags=forestopenfermion` `ck search env:* --tags=pyquil` `ck search env:* --tags=login,rigetti` `ck search env:* --tags=hackathon`  --shell_cmd="./rigetti_vqe_common.py --shots=1000 --minimizer_method=my_minimizer --max_func_evaluations=10"
 """
 
 import json
