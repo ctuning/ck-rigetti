@@ -12,8 +12,9 @@
 """
 This script runs Variational-Quantum-Eigensolver using Pyquil library
 
-Example running it partially using CK infrastructure (assuming the current directory is $HOME/CK/ck-rigetti/program/rigetti-vqe) :
-    time ck virtual `ck search env:* --tags=forestopenfermion` `ck search env:* --tags=pyquil` `ck search env:* --tags=login,rigetti` `ck search env:* --tags=hackathon`  --shell_cmd="./rigetti_vqe_common.py --shots=1000 --minimizer_method=my_minimizer --max_func_evaluations=10"
+Example running it partially using CK infrastructure:
+    ck virtual env  --tag_groups='forest,login compiler,python pyquil,lib vqe,utils vqe,hamiltonian deployed,ansatz,pyquil deployed,optimizer' \
+                    --shell_cmd="$HOME/CK/ck-rigetti/program/rigetti-vqe2/rigetti_vqe_common.py --shots=1000 --max_func_evaluations=10"
 """
 
 import json
