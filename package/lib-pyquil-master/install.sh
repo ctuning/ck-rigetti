@@ -1,7 +1,7 @@
 #! /bin/bash
 
 #
-# Installation script for Caffe.
+# Installation script for pyQuil.
 #
 # See CK LICENSE for licensing details.
 # See CK COPYRIGHT for copyright details.
