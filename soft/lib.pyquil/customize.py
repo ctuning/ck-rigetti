@@ -14,17 +14,15 @@ def version_cmd(i):
     path_with_init_py       = i['full_path']                            # the full_path that ends with PACKAGE_NAME/__init__.py
     path_without_init_py    = os.path.dirname( path_with_init_py )
     package_name            = os.path.basename( path_without_init_py )
-    ck                      = i['ck_kernel']
+    super_path              = os.path.dirname( path_without_init_py )
+    ver_detection_cmd       = "PYTHONPATH={0} python3 -c 'import {1} ; print({1}.__version__)' >$#filename#$".format(super_path, package_name)
 
-    rx=ck.load_module_from_path({'path':path_without_init_py, 'module_code_name':'__init__', 'skip_init':'yes'})
-    if rx['return']==0:
-        loaded_package  = rx['code']
-        version_string  = loaded_package.__version__
-    else:
-        ck.out('Failed to import package '+package_name+' : '+rx['error'])
-        version_string  = ''
+    return {'return':0, 'cmd': ver_detection_cmd}
 
-    return {'return':0, 'cmd':'', 'version':version_string}
+
+def parse_version(i):
+
+    return {'return':0, 'version': i.get('output',[''])[0] }
 
 ##############################################################################
 
