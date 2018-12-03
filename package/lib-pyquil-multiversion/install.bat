@@ -43,7 +43,7 @@ IF EXIST "%GIT_SRC_DIR%\examples\requirements.txt" (
     SET EXAMPLE_REQ=
 )
 
-%CK_ENV_COMPILER_PYTHON_FILE% -m pip install %GIT_SRC_DIR% -r %EXAMPLE_REQ% -t %EXTRA_PYTHON_SITE% %PIP_INSTALL_OPTIONS%
+%CK_ENV_COMPILER_PYTHON_FILE% -m pip install %GIT_SRC_DIR% %EXAMPLE_REQ% -t %EXTRA_PYTHON_SITE% %PIP_INSTALL_OPTIONS%
 
 if %errorlevel% neq 0 (
  echo.
