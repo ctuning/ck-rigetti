@@ -74,7 +74,7 @@ install:
     - ck detect soft:compiler.python --full_path=`which python`                 # pick the one Travis has set for us in the PATH
     - SCIPY=`python -m pip show scipy | awk '$1=="Location:" {print $2}'`/scipy/__init__.py
     - ck detect soft:lib.python.scipy --full_path=$SCIPY                        # pick the one installed via requirements.txt
-    - ck install package:lib-pyquil-1.9.0                                       # have to install this again into CK's registered space
+    - ck install package:lib-pyquil-multiversion --force_version=1.9.0          # select a specific version out of a "multiversion" package
 
 script:
     - |
