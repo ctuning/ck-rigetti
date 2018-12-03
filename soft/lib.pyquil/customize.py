@@ -100,6 +100,7 @@ def setup(i):
     env[env_prefix]         = path_install
     env[env_prefix+'_LIB']  = path_lib
     env[env_prefix+'_EXAMPLES'] = os.path.join(path_pre_install,'src','examples')
+    env[env_prefix+'_MAJ_VER']  = i.get('version_split', [ 0 ])[0]
 
     env['PYTHONPATH']       = path_install + ( ';%PYTHONPATH%' if winh=='yes' else ':${PYTHONPATH}')
 
