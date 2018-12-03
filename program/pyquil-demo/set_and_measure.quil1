@@ -1,3 +1,5 @@
+# set_and_measure program for pyQuil versions 1.x
+#
 X 0
 I 1
 MEASURE 0 [0]

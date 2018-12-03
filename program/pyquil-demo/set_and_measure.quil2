@@ -1,0 +1,11 @@
+# set_and_measure program for pyQuil versions 2+
+#
+DECLARE ro BIT[4] # declare a 4-bit classical read-out register
+X 0
+I 1
+MEASURE 0 ro[0]
+MEASURE 1 ro[1]
+I 2
+X 3
+MEASURE 2 ro[2]
+MEASURE 3 ro[3]

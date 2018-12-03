@@ -42,7 +42,7 @@
       "ignore_return_code": "no",
       "run_time": {
         "output_invariant_of_repeat": "yes",
-        "run_cmd_main": "$<<CK_ENV_COMPILER_PYTHON_FILE>>$ $<<CK_ENV_LIB_PYQUIL_EXAMPLES>>$/run_quil.py $<<QUIL_FILE>>$",
+        "run_cmd_main": "$<<CK_ENV_COMPILER_PYTHON_FILE>>$ $<<CK_ENV_LIB_PYQUIL_EXAMPLES>>$/run_quil.py $<<QUIL_FILE>>$$<<CK_ENV_LIB_PYQUIL_MAJ_VER>>$",
         "run_cmd_out1": "tmp-stdout.tmp",
         "run_cmd_out2": "tmp-stderr.tmp",
         "run_output_files": [
@@ -57,7 +57,7 @@
       "run_time": {
         "fine_grain_timer_file": "qvm_output.json",
         "output_invariant_of_repeat": "yes",
-        "run_cmd_main": "$<<CK_ENV_COMPILER_PYTHON_FILE>>$ ../run_quil_parse_classical_output.py $<<QUIL_FILE>>$",
+        "run_cmd_main": "$<<CK_ENV_COMPILER_PYTHON_FILE>>$ ../run_quil_parse_classical_output.py $<<QUIL_FILE>>$$<<CK_ENV_LIB_PYQUIL_MAJ_VER>>$",
         "run_cmd_out1": "tmp-stdout.tmp",
         "run_cmd_out2": "tmp-stderr.tmp",
         "run_output_files": [
