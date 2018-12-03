@@ -37,7 +37,13 @@ git clone -b %PACKAGE_COMMIT% %GIT_SRC_URL% %GIT_SRC_DIR%
 rem ######################################################################################
 echo Installing %PYTHON_PACKAGE_NAME% requirements to '%EXTRA_PYTHON_SITE%' ...
 
-%CK_ENV_COMPILER_PYTHON_FILE% -m pip install %GIT_SRC_DIR% -r %GIT_SRC_DIR%\examples\requirements.txt -t %EXTRA_PYTHON_SITE% %PIP_INSTALL_OPTIONS%
+IF EXIST "%GIT_SRC_DIR%\examples\requirements.txt" (
+    SET EXAMPLE_REQ=-r %GIT_SRC_DIR%\examples\requirements.txt
+) ELSE (
+    SET EXAMPLE_REQ=
+)
+
+%CK_ENV_COMPILER_PYTHON_FILE% -m pip install %GIT_SRC_DIR% -r %EXAMPLE_REQ% -t %EXTRA_PYTHON_SITE% %PIP_INSTALL_OPTIONS%
 
 if %errorlevel% neq 0 (
  echo.
