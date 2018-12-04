@@ -5,41 +5,31 @@ os:         linux
 language:   python
 
 python:
-    - 2.7
     - 3.6
 
 env:
     matrix:
-        - TRAVIS_CK_WHICH_TEST=from-quil-file QUIL_FILE=../teleport.quil
-        - TRAVIS_CK_WHICH_TEST=from-pyquil-examples PYQUIL_EXAMPLE=pointer.py
-        - TRAVIS_CK_WHICH_TEST=vqe_helium
+        - PYQUIL_VERSION=1.9.0
+        - PYQUIL_VERSION=2.1.0
 
 matrix:
     include:
+        - os: linux
+          language: python
+          python:   2.7
+          env:      PYQUIL_VERSION=1.9.0
         - os: osx
           language: generic
           python:   2.7
-          env:      WANTED_PYTHON_VERSION=2.7 TRAVIS_CK_WHICH_TEST=from-quil-file QUIL_FILE=../teleport.quil
-        - os: osx
-          language: generic
-          python:   2.7
-          env:      WANTED_PYTHON_VERSION=2.7 TRAVIS_CK_WHICH_TEST=from-pyquil-examples PYQUIL_EXAMPLE=pointer.py
-        - os: osx
-          language: generic
-          python:   2.7
-          env:      WANTED_PYTHON_VERSION=2.7 TRAVIS_CK_WHICH_TEST=vqe_helium
+          env:      WANTED_PYTHON_VERSION=2.7 PYQUIL_VERSION=1.9.0
         - os: osx
           language: generic
           python:   3.6
-          env:      WANTED_PYTHON_VERSION=3.6 TRAVIS_CK_WHICH_TEST=from-quil-file QUIL_FILE=../teleport.quil
+          env:      WANTED_PYTHON_VERSION=3.6 PYQUIL_VERSION=1.9.0
         - os: osx
           language: generic
           python:   3.6
-          env:      WANTED_PYTHON_VERSION=3.6 TRAVIS_CK_WHICH_TEST=from-pyquil-examples PYQUIL_EXAMPLE=pointer.py
-        - os: osx
-          language: generic
-          python:   3.6
-          env:      WANTED_PYTHON_VERSION=3.6 TRAVIS_CK_WHICH_TEST=vqe_helium
+          env:      WANTED_PYTHON_VERSION=3.6 PYQUIL_VERSION=2.1.0
 
 before_install:
     - |
@@ -48,41 +38,41 @@ before_install:
 
             if [ "$WANTED_PYTHON_VERSION" == "2.7" ]; then
                 brew reinstall python\@2 || brew link --overwrite python\@2     # install and link python2 and pip2 to /usr/local/bin
+                export PATH=/usr/local/opt/python\@2/bin:$PATH
+                export PYTHON_EXE=python
             else
                 brew reinstall python                                           # install and link python3 and pip3 to /usr/local/bin
+                export PATH=/usr/local/opt/python/bin:$PATH
+                export PYTHON_EXE=python3
             fi
-            export PATH=/usr/local/opt/python/libexec/bin:$PATH
-
-            export CK_PLATFORM_INDEX=2                                          # used later by CK
+            export CK_PLATFORM_NAME="generic-macos "                            # used later by CK
         else
             sudo apt-get update -qq
             sudo apt-get install python-pip
             export WANTED_PYTHON_VERSION=$TRAVIS_PYTHON_VERSION                 # since Python is supported in Linux, get it from Travis
-            export CK_PLATFORM_INDEX=1                                          # used later by CK
+            export CK_PLATFORM_NAME="generic-linux "                            # used later by CK (note the trailing space to make the choice unique)
+            export PYTHON_EXE=python
         fi
 
 install:
     - CWD=`pwd`
     - THIS_REPO_NAME=`basename $CWD`
-    - echo "os=${TRAVIS_OS_NAME}, python=${WANTED_PYTHON_VERSION}, which_test=${TRAVIS_CK_WHICH_TEST}"
-    - which python
-    - python --version
-    - python -m pip install --ignore-installed --verbose pip setuptools         # make sure pip is also up to date no matter what
-    - python -m pip install -r requirements.txt                                 # ck kernel itself
-    - ck pull repo:${THIS_REPO_NAME}                                            # trigger pulling dependent repositories
-    - echo $CK_PLATFORM_INDEX | ck detect platform.os --update_platform_init    # set the platform to generic-linux (1) or generic-macos (2)
-    - ck detect soft:compiler.python --full_path=`which python`                 # pick the one Travis has set for us in the PATH
-    - SCIPY=`python -m pip show scipy | awk '$1=="Location:" {print $2}'`/scipy/__init__.py
-    - ck detect soft:lib.python.scipy --full_path=$SCIPY                        # pick the one installed via requirements.txt
-    - ck install package:lib-pyquil-multiversion --force_version=1.9.0          # select a specific version out of a "multiversion" package
+    - echo "os=${TRAVIS_OS_NAME}, python=${WANTED_PYTHON_VERSION}, pyquil_version=${PYQUIL_VERSION}"
+    - which ${PYTHON_EXE}
+    - ${PYTHON_EXE} --version
+    - ${PYTHON_EXE} -m pip install --ignore-installed --verbose pip setuptools          # make sure pip is also up to date no matter what
+    - ${PYTHON_EXE} -m pip install -r requirements.txt                                  # ck kernel itself
+    - ck pull repo:${THIS_REPO_NAME}                                                    # trigger pulling dependent repositories
+    - echo "$CK_PLATFORM_NAME" | ck detect platform.os --update_platform_init           # set the platform to generic-linux (1) or generic-macos (2)
+    - ck detect soft:compiler.python --full_path=`which ${PYTHON_EXE}`                  # pick the one Travis has set for us in the PATH
+    - SCIPY=`${PYTHON_EXE} -m pip show scipy | awk '$1=="Location:" {print $2}'`/scipy/__init__.py
+    - ck detect soft:lib.python.scipy --full_path=$SCIPY                                # pick the one installed via requirements.txt
+    - ck install package:lib-pyquil-multiversion --force_version=$PYQUIL_VERSION        # select a specific version out of a "multiversion" package
 
 script:
-    - |
-        if [ $TRAVIS_CK_WHICH_TEST == "vqe_helium" ]; then
-            ck run program:rigetti-vqe --env.VQE_MAX_ITERATIONS=10
-        else
-            ck run program:pyquil-demo --cmd_key=${TRAVIS_CK_WHICH_TEST} ${QUIL_FILE:+--env.QUIL_FILE=${QUIL_FILE}}
-        fi
+    - ck run program:pyquil-demo --cmd_key=from-quil-file --env.QUIL_FILE=../teleport.quil --treat_return_code_as_exit_code
+    - ck run program:pyquil-demo --cmd_key=from-pyquil-examples --env.PYQUIL_EXAMPLE=meyer_penny_game.py --treat_return_code_as_exit_code
+    - ck run program:rigetti-vqe --env.VQE_MAX_ITERATIONS=10 --treat_return_code_as_exit_code
 
 notifications:
     email:
