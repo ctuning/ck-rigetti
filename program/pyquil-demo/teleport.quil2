@@ -1,0 +1,38 @@
+# teleport program for pyQuil versions 2+
+#
+DECLARE ro BIT[8] # declare a 8-bit classical read-out register
+
+## Setting the input to 1 (it defaults to 0)
+# X 1
+
+## Rotate the input around X by 1.3 radians:
+RX(1.3) 1
+
+## Create Bell Pair:
+H 2
+CNOT 2 3
+
+## Teleport:
+CNOT 1 2
+H 1
+
+## Take classical measurements that destroy states:
+MEASURE 1 ro[5]
+MEASURE 2 ro[6]
+
+## Classically communicate measurements:
+JUMP-UNLESS @ENDIF1 ro[6]
+X 3
+LABEL @ENDIF1
+
+JUMP-UNLESS @ENDIF2 ro[5]
+Z 3
+LABEL @ENDIF2
+
+## Undo the original rotation around X by 1.3 radians:
+## (it was introduced for input, now we perform the reverse on the output)
+#
+RX(-1.3) 3
+
+## This should contain the state we originally sent:
+MEASURE 3 ro[7]

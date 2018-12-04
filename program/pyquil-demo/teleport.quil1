@@ -1,3 +1,6 @@
+# teleport program for pyQuil versions 1.x
+#
+
 ## Setting the input to 1 (it defaults to 0)
 # X 11
 
