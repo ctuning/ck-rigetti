@@ -167,7 +167,7 @@ def helium_tiny_ansatz(ab):
 
 
 if __name__ == '__main__':
-    start_params, sample_number, q_device_name, minimizer_method, minimizer_options, minimizer_function = cmdline_parse_and_report(
+    start_params, sample_number, q_device_name, minimizer_method, minimizer_options, minimizer_function, visualize_ansatz = cmdline_parse_and_report(
         num_params                  = 2,
         q_device_name_default       = 'QVM',
         q_device_name_help          = "Real devices: '8Q-Agave' or '19Q-Acorn'. Either 'QVM' or '' for remote simulator",
