@@ -34,17 +34,21 @@ matrix:
 before_install:
     - |
         if [ $TRAVIS_OS_NAME == "osx" ]; then
-            brew update                                                         # this swaps python versions and makes 3 the default one
+            if [ "0" == "1" ]; then
+                brew update                                                         # this swaps python versions and makes 3 the default one
 
-            if [ "$WANTED_PYTHON_VERSION" == "2.7" ]; then
-                brew reinstall python\@2 || brew link --overwrite python\@2     # install and link python2 and pip2 to /usr/local/bin
-                export PATH=/usr/local/opt/python\@2/bin:$PATH
-                export PYTHON_EXE=python
-            else
-                brew reinstall python                                           # install and link python3 and pip3 to /usr/local/bin
-                export PATH=/usr/local/opt/python/bin:$PATH
-                export PYTHON_EXE=python3
+                if [ "$WANTED_PYTHON_VERSION" == "2.7" ]; then
+                    brew reinstall python\@2 || brew link --overwrite python\@2     # install and link python2 and pip2 to /usr/local/bin
+                    export PATH=/usr/local/opt/python\@2/bin:$PATH
+                    export PYTHON_EXE=python
+                else
+                    brew reinstall python                                           # install and link python3 and pip3 to /usr/local/bin
+                    export PATH=/usr/local/opt/python/bin:$PATH
+                    export PYTHON_EXE=python3
+                fi
             fi
+
+            export PYTHON_EXE=python
             export CK_PLATFORM_NAME="generic-macos "                            # used later by CK
         else
             sudo apt-get update -qq
@@ -61,12 +65,15 @@ install:
     - which ${PYTHON_EXE}
     - ${PYTHON_EXE} --version
     - ${PYTHON_EXE} -m pip install --ignore-installed --verbose pip setuptools          # make sure pip is also up to date no matter what
-    - ${PYTHON_EXE} -m pip install -r requirements.txt                                  # ck kernel itself
+    - ${PYTHON_EXE} -m pip install ck
     - ck pull repo:${THIS_REPO_NAME}                                                    # trigger pulling dependent repositories
     - echo "$CK_PLATFORM_NAME" | ck detect platform.os --update_platform_init           # set the platform to generic-linux (1) or generic-macos (2)
-    - ck detect soft:compiler.python --full_path=`which ${PYTHON_EXE}`                  # pick the one Travis has set for us in the PATH
-    - SCIPY=`${PYTHON_EXE} -m pip show scipy | awk '$1=="Location:" {print $2}'`/scipy/__init__.py
-    - ck detect soft:lib.python.scipy --full_path=$SCIPY                                # pick the one installed via requirements.txt
+    - echo | ck detect soft:compiler.python --default_selection="$WANTED_PYTHON_VERSION" --first_match
+    - PYTHON_FILE=`ck virtual env --tags=compiler,python --shell_cmd='echo $CK_ENV_COMPILER_PYTHON_FILE'`
+    - echo ${PYTHON_FILE}
+    - ${PYTHON_FILE} --version
+    - ${PYTHON_FILE} -m pip install --ignore-installed --verbose pip setuptools
+    - ck install package:lib-python-scipy
     - ck install package:lib-pyquil-multiversion --force_version=$PYQUIL_VERSION        # select a specific version out of a "multiversion" package
 
 script:
