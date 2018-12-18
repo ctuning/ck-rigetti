@@ -1,70 +1,62 @@
-# ck-rigetti
+# CK repository for Rigetti's pyQuil API
 
 [![compatibility](https://github.com/ctuning/ck-guide-images/blob/master/ck-compatible.svg)](https://github.com/ctuning/ck)
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 [![Travis Build Status](https://travis-ci.org/ctuning/ck-rigetti.svg?branch=master)](https://travis-ci.org/ctuning/ck-rigetti)
 
+* [pyQuil's code](https://github.com/rigetti/pyquil) on gitHub.
+* [pyQuil's official documentation](https://pyquil.readthedocs.io/en/stable/) on ReadTheDocs.
 
-* [pyQuil's code](https://github.com/rigetticomputing/pyquil) on gitHub.
-* [pyQuil's official documentation](http://pyquil.readthedocs.io/en/latest/) on ReadTheDocs.
-
-## Obtaining your Forest API key and user_id
-
-Visit [Rigetti Forest sign-up page](https://www.rigetti.com/index.php/forest)
-and follow their instructions to obtain two strings: api_key and user_id .
-Make a note of them, they will be needed at a later step.
+## List of dependencies:
+- *Python 3.6+* ([required by pyQuil](https://pyquil.readthedocs.io/en/stable/start.html); [CK supports 2.7 and 3.3+](https://github.com/ctuning/ck#minimal-installation)).
+- *git* (required by CK, is usually installed on modern Operating Systems)
+- [Collective Knowledge](http://cknowledge.org).
 
 
 ## Installation (on Ubuntu)
 
-### Install global prerequisites, Python and its pip (Python2 is also supported)
+### Install Python 3 and its pip:
 
 ```
 $ sudo apt-get install python3 python3-pip
 ```
 
-### Install Collective Knowledge
+### Install Collective Knowledge:
 
 ```
-$ sudo pip3 install ck
+$ sudo python3 -m pip install ck
 ```
 
 
 ## Installation (on MacOSX)
 
-### Install Python3 and its Pip3 (Python2 is also supported)
-
+### Install Python 3.6 and its pip:
 ```
 $ brew update
-$ brew reinstall python
+$ brew unlink python
+$ brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/f2a764ef944b1080be64bd88dca9a1d80130c558/Formula/python.rb
+$ export PATH=/usr/local/opt/python/bin:$PATH   # better to put this into your .bashrc config file to avoid repeating in every terminal window
 ```
 
-### Minimal CK installation
-
-The minimal installation requires:
-
-* Python 2.7 or 3.3+ (limitation is mainly due to unitests)
-* Git command line client.
-
-You can install CK in your local user space as follows:
+### Install Collective Knowledge:
 
 ```
-$ git clone http://github.com/ctuning/ck
-$ export PATH=$PWD/ck/bin:$PATH
-$ export PYTHONPATH=$PWD/ck:$PYTHONPATH
+$ python3 -m pip install ck
 ```
 
-You can also install CK via PIP with sudo to avoid setting up environment variables yourself:
-
-```
-$ sudo pip install ck
-```
 
 ## Common part of the installation
 
-### Detect a Python interpreter (interactively choose one if there are several options)
+### Download the pre-compiled Quantum Compiler and Simulator:
+
+Visit [Rigetti Forest SDK download page](https://www.rigetti.com/forest)
+and follow their instructions to obtain two pre-compiled binaries
+for your operating system: *qvm* (the local Simulator) and *quilc* (the local Quil compiler).
+
+
+### Detect a Python 3 interpreter (interactively choose one if there are several options)
 ```
-$ ck detect soft:compiler.python
+$ ck detect soft:compiler.python --default_selection="3."
 ```
 
 ### Install this CK repository with all its dependencies (other CK repos to reuse artifacts)
@@ -72,22 +64,20 @@ $ ck detect soft:compiler.python
 $ ck pull repo:ck-rigetti
 ```
 
-### List all the packages available 
+### Install a specific version of pyQuil API package:
 
 ```
-$ ck list ck-rigetti:package:*
+$ ck install package:lib-pyquil-multiversion --force_version=2.1.0
 ```
 
-### Install CK package for pyQuil (insert your api_key and user_id that you obtained by registering - see above)
+### Run your local QVM (the Simulator) in server mode:
 
 ```
-$ env PYQUIL_FOREST_API_KEY=xnmRPAVunQl19TtQz9eMd11iiIsArtUDTaEnsSV6ux \
-      PYQUIL_USER_ID=015a1263b-d7f2-426d-b2f5-2fe2e9727d1d0 \
-      ck install package:lib-pyquil
+$ qvm -S
 ```
 
 
-## Run some simple tests
+## Run some simple tests to see that your setup is working:
 
 #### Run a demo program (select interactively from a menu)
 
@@ -123,7 +113,7 @@ $ ck run program:pyquil-demo --cmd_key=from-pyquil-examples --env.PYQUIL_EXAMPLE
 
 #### shell-bound IPython session:
 ```
-$ ck virtual env --tags=pyquil --shell_cmd=ipython
+$ ck virtual env --tags=lib,pyquil --shell_cmd=ipython
 
 In [1]: import pyquil
 
@@ -132,7 +122,7 @@ In [2]: ...
 
 #### Jupyter Notebook session in your browser:
 ```
-$ ck virtual env --tags=pyquil --shell_cmd='jupyter notebook'
+$ ck virtual env --tags=lib,pyquil --shell_cmd='jupyter notebook'
 
 In [1]: import pyquil
 
