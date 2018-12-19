@@ -81,7 +81,7 @@ $ ck install package:lib-pyquil-multiversion --force_version=2.1.0
 ### Run your local QVM (the Simulator) in server mode (leave this terminal window open and switch to another one):
 
 ```
-$ ck virtual env --tags=rigetti,bin --shell_cmd='qvm -S'
+$ ck run program:qvm-server
 ```
 
 

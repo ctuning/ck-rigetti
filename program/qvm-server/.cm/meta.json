@@ -1,0 +1,33 @@
+{
+  "backup_data_uid": "3e474f96394e39f4", 
+  "data_name": "qvm-server", 
+  "no_compile": "yes", 
+  "no_target_file": "yes", 
+  "program": "yes", 
+  "run_cmds": {
+    "qvm-server": {
+      "ignore_return_code": "no", 
+      "run_time": {
+        "output_invariant_of_repeat": "no", 
+        "run_cmd_main": "qvm -p $<<QVM_SERVER_PORT>>$ -S"
+      }
+    }
+  }, 
+  "run_deps": {
+    "Local Forest binaries": {
+      "local": "yes", 
+      "name": "Rigetti Local Forest binaries", 
+      "sort": 5, 
+      "tags": "local,forest"
+    } 
+  }, 
+  "run_vars": {
+    "QVM_SERVER_PORT": 5000 
+  }, 
+  "tags": [
+    "rigetti", 
+    "forest",
+    "server",
+    "qvm"
+  ]
+}
