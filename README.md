@@ -53,6 +53,11 @@ Visit [Rigetti Forest SDK download page](https://www.rigetti.com/forest)
 and follow their instructions to obtain two pre-compiled binaries
 for your operating system: *qvm* (the local Simulator) and *quilc* (the local Quil compiler).
 
+Then let CK know where it was installed:
+```
+$ ck detect soft:local.forest
+```
+
 
 ### Detect a Python 3 interpreter (interactively choose one if there are several options)
 ```
@@ -70,10 +75,10 @@ $ ck pull repo:ck-rigetti
 $ ck install package:lib-pyquil-multiversion --force_version=2.1.0
 ```
 
-### Run your local QVM (the Simulator) in server mode:
+### Run your local QVM (the Simulator) in server mode (leave this terminal window open and switch to another one):
 
 ```
-$ qvm -S
+$ ck virtual env --tags=rigetti,bin --shell_cmd='qvm -S'
 ```
 
 
