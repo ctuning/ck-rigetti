@@ -3,6 +3,7 @@
   "data_name": "pyquil-demo",
   "no_compile": "yes",
   "no_target_file": "yes",
+  "pass_env_to_resolve": "yes",
   "print_files_after_run": [
     "tmp-stdout.tmp",
     "tmp-stderr.tmp"
@@ -68,6 +69,11 @@
   },
   "run_deps": {
     "forest login": {
+      "disable_if_env": {
+        "CK_RIGETTI_DEVICE": [
+          "local"
+        ]
+      },
       "local": "yes",
       "name": "Rigetti Forest credentials",
       "sort": 5,
@@ -82,8 +88,9 @@
     }
   },
   "run_vars": {
-    "QUIL_FILE":        "../hello_world.quil",
-    "PYQUIL_EXAMPLE":   "meyer_penny_game.py"
+    "CK_RIGETTI_DEVICE":    "local",
+    "QUIL_FILE":            "../hello_world.quil",
+    "PYQUIL_EXAMPLE":       "meyer_penny_game.py"
   },
   "tags": [
     "pyquil",
