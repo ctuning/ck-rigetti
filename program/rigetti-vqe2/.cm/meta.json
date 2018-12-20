@@ -3,6 +3,7 @@
   "data_name": "rigetti-vqe2", 
   "no_compile": "yes", 
   "no_target_file": "yes", 
+  "pass_env_to_resolve": "yes",
   "print_files_after_run": [
     "tmp-stdout.tmp", 
     "tmp-stderr.tmp"
@@ -24,11 +25,16 @@
   }, 
   "run_deps": {
     "forest login": {
-      "local": "yes", 
-      "name": "Rigetti Forest credentials", 
+      "disable_if_env": {
+        "VQE_QUANTUM_BACKEND": [
+            "QVM"
+        ]
+      },
+      "local": "yes",
+      "name": "Rigetti Forest credentials",
       "sort": 5,
       "tags": "forest,login"
-    }, 
+    },
     "python": {
       "local": "yes", 
       "name": "Python interpreter", 
