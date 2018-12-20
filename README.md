@@ -10,21 +10,21 @@
 * [pyQuil's code](https://github.com/rigetti/pyquil) on gitHub.
 * [pyQuil's official documentation](https://pyquil.readthedocs.io/en/stable/) on ReadTheDocs.
 
-## List of dependencies:
+## List of dependencies
 - *Python 3.6+* ([required by pyQuil](https://pyquil.readthedocs.io/en/stable/start.html); [CK supports 2.7 and 3.3+](https://github.com/ctuning/ck#minimal-installation)).
-- *git* (required by CK, is usually installed on modern Operating Systems)
+- *Git* (required by CK, is usually installed on modern Operating Systems)
 - [Collective Knowledge](http://cknowledge.org).
 
 
 ## Installation (on Ubuntu)
 
-### Install Python 3 and its pip:
+### Install Python 3 and its pip
 
 ```
 $ sudo apt-get install python3 python3-pip
 ```
 
-### Install Collective Knowledge:
+### Install Collective Knowledge
 
 ```
 $ sudo python3 -m pip install ck
@@ -33,15 +33,15 @@ $ sudo python3 -m pip install ck
 
 ## Installation (on MacOSX)
 
-### Install Python 3.6 and its pip:
+### Install Python 3.6 and its pip
 ```
 $ brew update
 $ brew unlink python
 $ brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/f2a764ef944b1080be64bd88dca9a1d80130c558/Formula/python.rb
-$ export PATH=/usr/local/opt/python/bin:$PATH   # better to put this into your .bashrc config file to avoid repeating in every terminal window
+$ export PATH=/usr/local/opt/python/bin:$PATH   # we suggest to put this into your .bashrc config file to avoid repeating in every terminal window
 ```
 
-### Install Collective Knowledge:
+### Install Collective Knowledge
 
 ```
 $ python3 -m pip install ck
@@ -50,21 +50,16 @@ $ python3 -m pip install ck
 
 ## Common part of the installation
 
-### Download the pre-compiled Quantum Compiler and Simulator:
+### Install the pre-compiled Quantum Simulator and Compiler
 
-Visit [Rigetti Forest SDK download page](https://www.rigetti.com/forest)
+Visit the [Forest SDK page](https://www.rigetti.com/forest)
 and follow their instructions to obtain two pre-compiled binaries
-for your operating system: *qvm* (the local Simulator) and *quilc* (the local Quil compiler).
-
-Then let CK know where it was installed:
-```
-$ ck detect soft:local.forest
-```
+for your operating system: *qvm* (the local Simulator) and *quilc* (the local Quil Compiler).
 
 
 ### Detect a Python 3 interpreter (interactively choose one if there are several options)
 ```
-$ ck detect soft:compiler.python --default_selection="3."
+$ ck detect soft:compiler.python --version_from=3.6
 ```
 
 ### Install this CK repository with all its dependencies (other CK repos to reuse artifacts)
@@ -72,20 +67,20 @@ $ ck detect soft:compiler.python --default_selection="3."
 $ ck pull repo:ck-rigetti
 ```
 
-### Install a specific version of pyQuil API package:
+### Install a specific version of the pyQuil API package
 
 ```
 $ ck install package:lib-pyquil-multiversion --force_version=2.1.0
 ```
 
-### Run your local QVM (the Simulator) in server mode (leave this terminal window open and switch to another one):
+### Run your local QVM (the Simulator) in server mode (leave this terminal window open and switch to another one)
 
 ```
 $ ck run program:qvm-server
 ```
 
 
-## Run some simple tests to see that your setup is working:
+## Run some simple tests to check that your setup works
 
 #### Run a demo program (select interactively from a menu)
 
@@ -119,7 +114,15 @@ $ ck run program:pyquil-demo --cmd_key=from-pyquil-examples --env.PYQUIL_EXAMPLE
 
 ## Run an interactive python session with access to CK-installed pyQuil
 
-#### shell-bound IPython session:
+#### Shell-bound Python session
+```
+$ ck virtual env --tags=lib,pyquil --shell_cmd=python
+
+>>> import pyquil
+>>>
+```
+
+#### Shell-bound IPython session
 ```
 $ ck virtual env --tags=lib,pyquil --shell_cmd=ipython
 
@@ -128,11 +131,8 @@ In [1]: import pyquil
 In [2]: ...
 ```
 
-#### Jupyter Notebook session in your browser:
+#### Jupyter Notebook session in your browser
 ```
 $ ck virtual env --tags=lib,pyquil --shell_cmd='jupyter notebook'
-
-In [1]: import pyquil
-
-In [2]: ...
+...
 ```
