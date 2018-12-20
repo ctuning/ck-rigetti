@@ -4,6 +4,7 @@
 [![automation](https://github.com/ctuning/ck-guide-images/blob/master/ck-artifact-automated-and-reusable.svg)](http://cTuning.org/ae)
 [![workflow](https://github.com/ctuning/ck-guide-images/blob/master/ck-workflow.svg)](http://cKnowledge.org)
 
+[![DOI](https://zenodo.org/badge/127313868.svg)](https://zenodo.org/badge/latestdoi/127313868)
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 [![Travis Build Status](https://travis-ci.org/ctuning/ck-rigetti.svg?branch=master)](https://travis-ci.org/ctuning/ck-rigetti)
 
