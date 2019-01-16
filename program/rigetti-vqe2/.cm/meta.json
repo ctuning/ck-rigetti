@@ -1,59 +1,46 @@
 {
-  "backup_data_uid": "08a7c804ac3ab6f5", 
-  "data_name": "rigetti-vqe2", 
-  "no_compile": "yes", 
-  "no_target_file": "yes", 
+  "backup_data_uid": "08a7c804ac3ab6f5",
+  "data_name": "rigetti-vqe2",
+  "no_compile": "yes",
+  "no_target_file": "yes",
   "pass_env_to_resolve": "yes",
   "print_files_after_run": [
-    "tmp-stdout.tmp", 
+    "tmp-stdout.tmp",
     "tmp-stderr.tmp"
-  ], 
-  "process_in_tmp": "yes", 
-  "program": "yes", 
+  ],
+  "process_in_tmp": "yes",
+  "program": "yes",
   "run_cmds": {
     "rigetti-vqe": {
-      "ignore_return_code": "no", 
+      "ignore_return_code": "no",
       "run_time": {
-        "fine_grain_timer_file": "rigetti_vqe_report.json", 
-        "output_invariant_of_repeat": "no", 
+        "fine_grain_timer_file": "rigetti_vqe_report.json",
+        "output_invariant_of_repeat": "no",
         "run_cmd_main": "$<<CK_ENV_COMPILER_PYTHON_FILE>>$ ../rigetti_vqe_common.py --sample_number $<<VQE_SAMPLE_SIZE>>$ --q-device-name $<<VQE_QUANTUM_BACKEND>>$ --max_func_evaluations $<<VQE_MAX_ITERATIONS>>$ --start_param_value $<<VQE_START_PARAM_VALUE>>$",
         "run_output_files": [
           "rigetti_vqe_report.json"
         ]
       }
     }
-  }, 
+  },
   "run_deps": {
+    "ansatz-plugin": {
+      "local": "yes",
+      "name": "pyQuil ansatz function",
+      "skip_pruning_by_other_deps": "yes",
+      "sort": 50,
+      "tags": "quantum,pyquil,ansatz,deployed"
+    },
     "forest login": {
       "disable_if_env": {
         "VQE_QUANTUM_BACKEND": [
-            "QVM"
+          "QVM"
         ]
       },
       "local": "yes",
       "name": "Rigetti Forest credentials",
       "sort": 5,
       "tags": "forest,login"
-    },
-    "python": {
-      "local": "yes", 
-      "name": "Python interpreter", 
-      "sort": 10,
-      "tags": "compiler,python"
-    }, 
-    "lib-pyquil": {
-      "local": "yes", 
-      "name": "Rigetti pyQuil", 
-      "skip_pruning_by_other_deps": "yes", 
-      "sort": 20,
-      "tags": "lib,pyquil"
-    },
-    "vqe-utils-plugin": {
-      "local": "yes",
-      "name": "VQE Python utility functions",
-      "skip_pruning_by_other_deps": "yes",
-      "sort": 30,
-      "tags": "quantum,vqe,utils,lib"
     },
     "hamiltonian-plugin": {
       "local": "yes",
@@ -62,12 +49,12 @@
       "sort": 40,
       "tags": "quantum,hamiltonian"
     },
-    "ansatz-plugin": {
+    "lib-pyquil": {
       "local": "yes",
-      "name": "pyQuil ansatz function",
+      "name": "Rigetti pyQuil",
       "skip_pruning_by_other_deps": "yes",
-      "sort": 50,
-      "tags": "quantum,pyquil,ansatz,deployed"
+      "sort": 20,
+      "tags": "lib,pyquil"
     },
     "optimizer-plugin": {
       "local": "yes",
@@ -75,20 +62,33 @@
       "skip_pruning_by_other_deps": "yes",
       "sort": 60,
       "tags": "quantum,optimizer,deployed"
+    },
+    "python": {
+      "local": "yes",
+      "name": "Python interpreter",
+      "sort": 10,
+      "tags": "compiler,python"
+    },
+    "vqe-utils-plugin": {
+      "local": "yes",
+      "name": "VQE Python utility functions",
+      "skip_pruning_by_other_deps": "yes",
+      "sort": 30,
+      "tags": "quantum,vqe,utils,lib"
     }
-  }, 
+  },
   "run_vars": {
-    "VQE_SAMPLE_SIZE":          1000,
-    "VQE_MAX_ITERATIONS":       15,
-    "VQE_START_PARAM_VALUE":    0.0,
-    "VQE_QUANTUM_BACKEND":      "QVM"
-  }, 
+    "VQE_MAX_ITERATIONS": 15,
+    "VQE_QUANTUM_BACKEND": "QVM",
+    "VQE_SAMPLE_SIZE": 1000,
+    "VQE_START_PARAM_VALUE": 0.0
+  },
   "tags": [
     "vqe",
     "vqe-implementation",
     "quantum",
-    "pyquil", 
-    "rigetti", 
+    "pyquil",
+    "rigetti",
     "hackathon"
   ]
 }

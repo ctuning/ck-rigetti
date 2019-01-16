@@ -1,27 +1,27 @@
 {
-  "backup_data_uid": "ae41be73ab84d73a", 
-  "data_name": "rigetti-vqe", 
-  "no_compile": "yes", 
-  "no_target_file": "yes", 
+  "backup_data_uid": "ae41be73ab84d73a",
+  "data_name": "rigetti-vqe",
+  "no_compile": "yes",
+  "no_target_file": "yes",
   "print_files_after_run": [
-    "tmp-stdout.tmp", 
+    "tmp-stdout.tmp",
     "tmp-stderr.tmp"
-  ], 
-  "process_in_tmp": "yes", 
-  "program": "yes", 
+  ],
+  "process_in_tmp": "yes",
+  "program": "yes",
   "run_cmds": {
     "rigetti-vqe-helium": {
-      "ignore_return_code": "no", 
+      "ignore_return_code": "no",
       "run_time": {
         "fine_grain_timer_file": "rigetti_vqe_report.json",
-        "output_invariant_of_repeat": "no", 
+        "output_invariant_of_repeat": "no",
         "run_cmd_main": "$<<CK_ENV_COMPILER_PYTHON_FILE>>$ ../rigetti_vqe_helium.py --start-params $<<VQE_START_PARAMS>>$ --sample_number $<<VQE_SAMPLE_SIZE>>$ --q-device-name $<<VQE_QUANTUM_BACKEND>>$ --minimizer_method $<<VQE_MINIMIZER_METHOD>>$ --max_func_evaluations $<<VQE_MAX_ITERATIONS>>$",
         "run_output_files": [
           "rigetti_vqe_report.json"
         ]
       }
     }
-  }, 
+  },
   "run_deps": {
     "forest login": {
       "local": "yes",
@@ -36,27 +36,27 @@
       "sort": 10,
       "tags": "tool,ck-quantum,hackathon"
     },
+    "lib-pyquil": {
+      "local": "yes",
+      "name": "Rigetti pyQuil",
+      "skip_pruning_by_other_deps": "yes",
+      "sort": 20,
+      "tags": "lib,pyquil"
+    },
     "python": {
       "local": "yes",
       "name": "Python interpreter",
       "sort": 15,
       "tags": "compiler,python"
-    },
-    "lib-pyquil": {
-      "local": "yes", 
-      "name": "Rigetti pyQuil", 
-      "skip_pruning_by_other_deps": "yes", 
-      "sort": 20, 
-      "tags": "lib,pyquil"
     }
-  }, 
+  },
   "run_vars": {
-    "VQE_START_PARAMS"          : "1 1",
-    "VQE_SAMPLE_SIZE"           : 1000,
-    "VQE_MINIMIZER_METHOD"      : "my_random_sampler",
-    "VQE_MAX_ITERATIONS"        : 15,
-    "VQE_QUANTUM_BACKEND"       : "QVM"
-  }, 
+    "VQE_MAX_ITERATIONS": 15,
+    "VQE_MINIMIZER_METHOD": "my_random_sampler",
+    "VQE_QUANTUM_BACKEND": "QVM",
+    "VQE_SAMPLE_SIZE": 1000,
+    "VQE_START_PARAMS": "1 1"
+  },
   "tags": [
     "rigetti",
     "pyquil",

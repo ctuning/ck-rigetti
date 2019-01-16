@@ -1,22 +1,22 @@
 {
-  "auto_detect": "yes", 
+  "auto_detect": "yes",
   "customize": {
-    "check_that_exists": "yes", 
-    "detect_in_soft_dir": "yes", 
-    "unsplit_version_to_tags_prefixed_with": "ansatz.",
+    "check_that_exists": "yes",
     "deployed_name_infix": "pyquil.ansatz.",
-    "env_prefix": "CK_ENV_VQE_PYQUIL_ANSATZ", 
+    "detect_in_soft_dir": "yes",
+    "env_prefix": "CK_ENV_VQE_PYQUIL_ANSATZ",
     "limit_recursion_dir_search": {
-      "linux": 2, 
+      "linux": 2,
       "win": 2
-    }, 
-    "soft_file_universal": "custom_ansatz.py"
-  }, 
-  "soft_name": "Ansatz function for pyQuil VQE", 
+    },
+    "soft_file_universal": "custom_ansatz.py",
+    "unsplit_version_to_tags_prefixed_with": "ansatz."
+  },
+  "soft_name": "Ansatz function for pyQuil VQE",
   "tags": [
-    "quantum", 
-    "vqe", 
-    "ansatz", 
+    "quantum",
+    "vqe",
+    "ansatz",
     "pyquil"
   ]
 }
