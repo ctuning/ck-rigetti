@@ -1,20 +1,17 @@
 {
-  "data_uid": "6456e78d8c044a88", 
-  "data_name": "ck-rigetti", 
+  "data_alias": "ck-rigetti",
+  "data_name": "ck-rigetti",
+  "data_uid": "6456e78d8c044a88",
+  "data_uoa": "ck-rigetti",
   "dict": {
+    "desc": "CK workflow and components from Rigetti",
     "repo_deps": [
-      {
-        "repo_uoa": "ck-quantum",
-        "repo_url": "https://github.com/ctuning/ck-quantum"
-      },
       {
         "repo_uoa": "ck-autotuning",
         "repo_url": "https://github.com/ctuning/ck-autotuning"
       }
     ],
-    "url": "https://github.com/ctuning/ck-rigetti", 
-    "shared": "git"
-  }, 
-  "data_alias": "ck-rigetti", 
-  "data_uoa": "ck-rigetti"
+    "shared": "git",
+    "url": "https://github.com/ctuning/ck-rigetti"
+  }
 }
